@@ -109,10 +109,10 @@
         </div>
 
         <!-- Cross-Database Aggregates Analytics Cards with Pure CSS Progress Rings -->
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mb-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mb-4 animate-fade-in">
             <!-- 1. Total Uploads Card -->
             <div class="col">
-                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between">
+                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between interactive-card">
                     <div>
                         <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Total Uploads</small>
                         <h3 class="fw-bold text-light mb-0 mt-1">{{ analytics.total_uploads }}</h3>
@@ -131,7 +131,7 @@
 
             <!-- 2. Active Commissions Card -->
             <div class="col">
-                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between">
+                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between interactive-card">
                     <div>
                         <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Active Commissions</small>
                         <h3 class="fw-bold text-warning mb-0 mt-1">{{ analytics.active_commissions }}</h3>
@@ -149,7 +149,7 @@
 
             <!-- 3. Projected Revenue Card -->
             <div class="col">
-                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between">
+                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between interactive-card">
                     <div>
                         <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Projected Revenue</small>
                         <h3 class="fw-bold text-success mb-0 mt-1">${{ "%.2f"|format(analytics.projected_revenue) }}</h3>
@@ -167,7 +167,7 @@
 
             <!-- 4. Total AI Studio Uses Card -->
             <div class="col">
-                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between">
+                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between interactive-card">
                     <div>
                         <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Total AI Studio Uses</small>
                         <h3 class="fw-bold text-purple mb-0 mt-1" style="color: var(--accent-purple);">{{ analytics.ai_studio_uses }}</h3>
@@ -185,10 +185,10 @@
         </div>
 
         <!-- Chart.js Cross-Database Visual Analytics Module -->
-        <div class="row g-3 mb-4">
+        <div class="row g-3 mb-4 animate-fade-in">
             <!-- Chart 1: Category Distribution -->
             <div class="col-12 col-lg-5">
-                <div class="frosted-glass p-4 h-100">
+                <div class="frosted-glass p-4 h-100 interactive-card">
                     <h6 class="fw-bold text-light mb-3"><i class="bi bi-pie-chart text-info me-2"></i>Portfolio Categories Distribution</h6>
                     <div style="height: 220px; position: relative;">
                         <canvas id="categoryChart"></canvas>
@@ -198,7 +198,7 @@
 
             <!-- Chart 2: Commission Stage Breakdown -->
             <div class="col-12 col-lg-7">
-                <div class="frosted-glass p-4 h-100">
+                <div class="frosted-glass p-4 h-100 interactive-card">
                     <h6 class="fw-bold text-light mb-3"><i class="bi bi-bar-chart-steps text-accent me-2"></i>Commission Pipeline Stages</h6>
                     <div style="height: 220px; position: relative;">
                         <canvas id="pipelineChart"></canvas>
@@ -218,10 +218,10 @@
         </div>
 
         <!-- Pinterest-Style Dynamic Masonry Gallery -->
-        <div class="masonry-gallery" id="masonryGallery">
+        <div class="masonry-gallery animate-fade-in" id="masonryGallery">
             {% if artworks %}
                 {% for art in artworks %}
-                    <div class="masonry-item" data-category="{{ art.category or 'Digital 2D' }}">
+                    <div class="masonry-item interactive-card" data-category="{{ art.category or 'Digital 2D' }}">
                         <img src="{{ url_for('static', filename='uploads/' + (art.thumbnail_url or art.image_url)) }}" 
                              alt="{{ art.title }}" 
                              class="masonry-img" 
