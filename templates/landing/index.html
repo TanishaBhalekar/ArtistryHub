@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - ArtistryHub{% endblock %}
+
+{% block content %}
+<div class="container text-center my-auto py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="frosted-glass p-5">
+                <span class="badge bg-purple-subtle text-info mb-3 px-3 py-2 border border-info-subtle rounded-pill">
+                    <i class="bi bi-palette me-1"></i> ArtistryHub Platform
+                </span>
+                <h1 class="display-4 fw-bold mb-3">
+                    Empowering Artists with <span class="text-gradient">Vision & Intelligence</span>
+                </h1>
+                <p class="lead text-secondary mb-4">
+                    Showcase portfolios, manage client commissions, and apply automated OpenCV image filters in one seamless hub.
+                </p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-gradient btn-lg px-4 fs-6">
+                            Go to Dashboard <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-gradient btn-lg px-4 fs-6">
+                            Create Free Account <i class="bi bi-person-plus ms-1"></i>
+                        </a>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg px-4 fs-6">
+                            Sign In
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

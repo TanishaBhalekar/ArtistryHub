@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account - ArtistryHub{% endblock %}
+
+{% block content %}
+<div class="container my-auto py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+            <div class="frosted-glass p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold mb-1">Create Your <span class="text-gradient">Account</span></h2>
+                    <p class="text-secondary small">Join ArtistryHub to showcase and commission digital art</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('auth.register') }}" id="registerForm" class="needs-validation" novalidate>
+                    <!-- Full Name -->
+                    <div class="mb-3">
+                        <label for="name" class="form-label text-secondary small fw-semibold">Full Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary-subtle text-secondary">
+                                <i class="bi bi-card-heading"></i>
+                            </span>
+                            <input type="text" 
+                                   class="form-control form-control-glass" 
+                                   id="name" 
+                                   name="name" 
+                                   placeholder="e.g. Jane Doe" 
+                                   required>
+                            <div class="invalid-feedback">
+                                Please enter your full name.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Username & Email (2 column on md) -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label text-secondary small fw-semibold">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary-subtle text-secondary">
+                                    <i class="bi bi-at"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control form-control-glass" 
+                                       id="username" 
+                                       name="username" 
+                                       placeholder="janedoe" 
+                                       pattern="[a-zA-Z0-9_]{3,20}" 
+                                       required>
+                                <div class="invalid-feedback">
+                                    3-20 characters (letters, numbers, underscore).
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label text-secondary small fw-semibold">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary-subtle text-secondary">
+                                    <i class="bi bi-envelope"></i>
+                                </span>
+                                <input type="email" 
+                                       class="form-control form-control-glass" 
+                                       id="email" 
+                                       name="email" 
+                                       placeholder="jane@example.com" 
+                                       required>
+                                <div class="invalid-feedback">
+                                    Please enter a valid email address.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Passwords -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label text-secondary small fw-semibold">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary-subtle text-secondary">
+                                    <i class="bi bi-lock"></i>
+                                </span>
+                                <input type="password" 
+                                       class="form-control form-control-glass" 
+                                       id="password" 
+                                       name="password" 
+                                       placeholder="••••••••" 
+                                       minlength="6" 
+                                       required>
+                                <div class="invalid-feedback">
+                                    Minimum 6 characters.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="confirm_password" class="form-label text-secondary small fw-semibold">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary-subtle text-secondary">
+                                    <i class="bi bi-lock-fill"></i>
+                                </span>
+                                <input type="password" 
+                                       class="form-control form-control-glass" 
+                                       id="confirm_password" 
+                                       name="confirm_password" 
+                                       placeholder="••••••••" 
+                                       required>
+                                <div class="invalid-feedback" id="confirmFeedback">
+                                    Please confirm your password.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-gradient w-100 py-2 fw-semibold mb-3 mt-2">
+                        <i class="bi bi-person-plus me-1"></i> Register Account
+                    </button>
+                </form>
+
+                <div class="text-center mt-3 pt-3 border-top border-secondary-subtle">
+                    <p class="text-secondary small mb-0">
+                        Already have an account? 
+                        <a href="{{ url_for('auth.login') }}" class="link-accent fw-medium">Sign In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('registerForm');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirm_password');
+    const confirmFeedback = document.getElementById('confirmFeedback');
+
+    form.addEventListener('submit', (event) => {
+        let valid = form.checkValidity();
+
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity('Passwords do not match');
+            confirmFeedback.textContent = 'Passwords do not match.';
+            valid = false;
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
+
+        if (!valid) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+
+    confirmPassword.addEventListener('input', () => {
+        if (password.value === confirmPassword.value) {
+            confirmPassword.setCustomValidity('');
+        } else {
+            confirmPassword.setCustomValidity('Passwords do not match');
+            confirmFeedback.textContent = 'Passwords do not match.';
+        }
+    });
+});
+</script>
+{% endblock %}

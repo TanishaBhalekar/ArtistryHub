@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Palette Lab - ArtistryHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="frosted-glass p-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-palette text-accent me-2"></i>Palette <span class="text-gradient">Lab</span></h2>
+            <p class="text-secondary mb-0 small">Extract 5 dominant HEX color profiles from portfolio assets using OpenCV and Scikit-Learn KMeans clustering.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Palette Lab Grid -->
+    <div class="row g-4">
+        <!-- Left Panel: Input Controls & Image Selection -->
+        <div class="col-12 col-lg-5">
+            <div class="frosted-glass p-4 h-100">
+                <h5 class="fw-bold mb-3"><i class="bi bi-image text-info me-2"></i>Select Image Source</h5>
+                
+                <!-- Nav Tabs -->
+                <ul class="nav nav-pills mb-3 gap-2" id="sourceTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="filter-pill active" id="upload-tab" data-bs-toggle="pill" data-bs-target="#upload-pane" type="button">Upload File</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="filter-pill" id="portfolio-tab" data-bs-toggle="pill" data-bs-target="#portfolio-pane" type="button">My Portfolio</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="sourceTabContent">
+                    <!-- Tab 1: Upload -->
+                    <div class="tab-pane fade show active" id="upload-pane" role="tabpanel">
+                        <form id="uploadPaletteForm" method="POST" action="{{ url_for('ai.extract_palette') }}" enctype="multipart/form-data">
+                            <div class="upload-dropzone p-4 text-center border border-dashed border-secondary rounded-3 bg-dark-subtle mb-3">
+                                <i class="bi bi-cloud-arrow-up display-5 text-accent mb-2"></i>
+                                <p class="small text-secondary mb-2">Upload PNG, JPG, or WEBP artwork</p>
+                                <input type="file" name="image" id="paletteImageInput" class="form-control form-control-glass" accept="image/*" required onchange="previewPaletteImage(this)">
+                            </div>
+                            <button type="submit" class="btn btn-gradient w-100 py-2 fw-semibold">
+                                <i class="bi bi-magic me-1"></i> Extract 5 Dominant Colors
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Tab 2: Pick from Portfolio -->
+                    <div class="tab-pane fade" id="portfolio-pane" role="tabpanel">
+                        {% if artworks %}
+                            <form id="portfolioPaletteForm" method="POST" action="{{ url_for('ai.extract_palette') }}">
+                                <label class="form-label text-secondary small fw-semibold mb-2">Choose Portfolio Asset</label>
+                                <div class="row row-cols-2 g-2 mb-3 max-vh-50 overflow-y-auto" style="max-height: 280px;">
+                                    {% for art in artworks %}
+                                        <div class="col">
+                                            <label class="w-100 cursor-pointer">
+                                                <input type="radio" name="artwork_id" value="{{ art.id }}" class="btn-check" required>
+                                                <div class="card bg-dark border-secondary p-1 h-100 artwork-radio-card text-center">
+                                                    <img src="{{ url_for('static', filename='uploads/' + (art.thumbnail_url or art.image_url)) }}" alt="{{ art.title }}" class="img-fluid rounded mb-1" style="height: 90px; object-fit: cover;">
+                                                    <span class="extra-small text-truncate text-light d-block px-1">{{ art.title }}</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <button type="submit" class="btn btn-gradient w-100 py-2 fw-semibold">
+                                    <i class="bi bi-magic me-1"></i> Extract from Portfolio
+                                </button>
+                            </form>
+                        {% else %}
+                            <div class="text-center py-4 text-secondary small">
+                                <p>No portfolio artworks uploaded yet.</p>
+                                <a href="{{ url_for('portfolio.upload') }}" class="btn btn-outline-info btn-sm">Upload Artwork First</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Preview Selected Image Container -->
+                <div id="palettePreviewContainer" class="mt-4 pt-3 border-top border-secondary-subtle {% if not selected_image_url %}d-none{% endif %}">
+                    <h6 class="fw-semibold text-secondary small mb-2">Analyzed Image</h6>
+                    <img id="palettePreviewImage" src="{{ selected_image_url or '#' }}" alt="Analyzed Artwork" class="img-fluid rounded border border-secondary w-100" style="max-height: 220px; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Interactive Color Matrix Swatches -->
+        <div class="col-12 col-lg-7">
+            <div class="frosted-glass p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-sliders text-accent me-2"></i>Extracted Color Matrix</h5>
+                    <span id="copyToast" class="badge bg-success opacity-0 transition-all text-white px-3 py-1">
+                        <i class="bi bi-check2 me-1"></i> Copied to Clipboard!
+                    </span>
+                </div>
+
+                <div id="paletteResultsArea">
+                    {% if palette %}
+                        <!-- Continuous Palette Bar -->
+                        <div class="mb-4">
+                            <label class="form-label text-secondary extra-small fw-semibold text-uppercase tracking-wider mb-1">Color Palette Weight Distribution</label>
+                            <div class="progress rounded-3 overflow-hidden border border-secondary" style="height: 24px;">
+                                {% for col in palette %}
+                                    <div class="progress-bar" role="progressbar" style="width: {{ col.percentage }}%; background-color: {{ col.hex }};" title="{{ col.hex }} ({{ col.percentage }}%)"></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- 5 Animated Color Swatches Grid -->
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" id="swatchesContainer">
+                            {% for col in palette %}
+                                <div class="col">
+                                    <div class="swatch-card p-3 rounded-4 border border-secondary-subtle bg-dark bg-opacity-75 h-100 d-flex flex-column justify-content-between position-relative overflow-hidden cursor-pointer"
+                                         onclick="copyHexCode('{{ col.hex }}', this)"
+                                         style="transition: all 0.3s ease;">
+                                        
+                                        <!-- Color Block -->
+                                        <div class="swatch-box rounded-3 mb-3 d-flex align-items-center justify-content-center shadow" 
+                                             style="height: 100px; background-color: {{ col.hex }}; border: 1px solid rgba(255, 255, 255, 0.15);">
+                                            <span class="badge bg-dark bg-opacity-75 text-light px-2 py-1 extra-small">
+                                                {{ col.percentage }}%
+                                            </span>
+                                        </div>
+
+                                        <!-- Hex Code & Copy Utility -->
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <h6 class="fw-bold text-light mb-0 font-monospace">{{ col.hex }}</h6>
+                                                <small class="text-secondary extra-small">{{ col.rgb_str }}</small>
+                                            </div>
+                                            <button type="button" class="btn btn-glass action-btn-circle copy-btn p-0" title="Click to copy HEX clip" style="width: 32px; height: 32px;">
+                                                <i class="bi bi-clipboard"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <!-- Empty / Placeholder State -->
+                        <div class="text-center py-5 my-4">
+                            <i class="bi bi-palette2 display-3 text-secondary mb-3"></i>
+                            <h5 class="fw-semibold">No Color Palette Generated Yet</h5>
+                            <p class="text-secondary small mb-4 max-w-md mx-auto">Upload an image or pick a portfolio artwork to run Scikit-Learn KMeans clustering and extract 5 dominant HEX color profiles.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.artwork-radio-card {
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+input[type="radio"]:checked + .artwork-radio-card {
+    border-color: var(--accent-purple) !important;
+    background: rgba(139, 92, 246, 0.15) !important;
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+}
+.swatch-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent-cyan) !important;
+    box-shadow: 0 10px 24px rgba(6, 182, 212, 0.25);
+}
+</style>
+
+<script>
+function previewPaletteImage(input) {
+    const container = document.getElementById('palettePreviewContainer');
+    const img = document.getElementById('palettePreviewImage');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            img.src = e.target.result;
+            container.classList.remove('d-none');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Click-to-copy Hex value clip
+function copyHexCode(hex, cardElement) {
+    navigator.clipboard.writeText(hex).then(() => {
+        // Show Toast
+        const toast = document.getElementById('copyToast');
+        toast.innerHTML = `<i class="bi bi-check2 me-1"></i> Copied <strong>${hex}</strong>!`;
+        toast.classList.remove('opacity-0');
+        toast.classList.add('opacity-100');
+
+        // Micro animation on icon
+        const icon = cardElement.querySelector('.copy-btn i');
+        if (icon) {
+            icon.className = 'bi bi-check-lg text-success';
+            setTimeout(() => icon.className = 'bi bi-clipboard', 1500);
+        }
+
+        setTimeout(() => {
+            toast.classList.remove('opacity-100');
+            toast.classList.add('opacity-0');
+        }, 2000);
+    }).catch(err => {
+        console.error('Clipboard copy failed: ', err);
+    });
+}
+</script>
+{% endblock %}

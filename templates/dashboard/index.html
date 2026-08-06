@@ -1,0 +1,469 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - ArtistryHub{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- Sidebar Navigation with Glassmorphism -->
+    <aside class="sidebar-navigation" id="dashboardSidebar">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-4 px-2">
+                <i class="bi bi-grid-1x2-fill text-accent fs-4"></i>
+                <span class="fw-bold fs-5 logo-text">Artistry<span class="text-accent">Hub</span></span>
+            </div>
+
+            <ul class="sidebar-nav-list">
+                <li class="sidebar-nav-item">
+                    <a href="{{ url_for('dashboard') }}" class="sidebar-nav-link active">
+                        <i class="bi bi-house-door"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="{{ url_for('portfolio.index') }}" class="sidebar-nav-link">
+                        <i class="bi bi-images"></i>
+                        <span>Portfolio Gallery</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="{{ url_for('portfolio.upload') }}" class="sidebar-nav-link">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <span>Upload Artwork</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="{{ url_for('commissions.index') }}" class="sidebar-nav-link">
+                        <i class="bi bi-briefcase"></i>
+                        <span>Commissions</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="{{ url_for('ai.palette_lab') }}" class="sidebar-nav-link">
+                        <i class="bi bi-palette"></i>
+                        <span>Palette Lab</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="{{ url_for('ai.prompt_forge') }}" class="sidebar-nav-link">
+                        <i class="bi bi-cpu"></i>
+                        <span>Prompt Forge</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="{{ url_for('ai.style_explorer') }}" class="sidebar-nav-link">
+                        <i class="bi bi-journal-album"></i>
+                        <span>Style Explorer</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="{{ url_for('ai.composition_guide') }}" class="sidebar-nav-link">
+                        <i class="bi bi-bounding-box"></i>
+                        <span>Composition Guide</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- User Profile Snippet in Sidebar -->
+        <div class="sidebar-user-footer">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2 overflow-hidden">
+                    <div class="bg-gradient text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-6" style="width: 38px; height: 38px; min-width: 38px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));">
+                        {{ current_user.username[:2].upper() }}
+                    </div>
+                    <div class="text-truncate">
+                        <div class="fw-semibold text-truncate small">{{ current_user.name }}</div>
+                        <div class="text-secondary extra-small text-truncate" style="font-size: 0.75rem;">@{{ current_user.username }}</div>
+                    </div>
+                </div>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger btn-sm p-1 rounded-circle ms-1" title="Logout" style="width: 32px; height: 32px;">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Viewport -->
+    <main class="main-viewport">
+        <!-- Top Toolbar & Search -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <!-- Toggle Sidebar for Mobile -->
+            <button class="btn btn-outline-secondary d-lg-none" type="button" id="sidebarToggle">
+                <i class="bi bi-list"></i> Menu
+            </button>
+
+            <!-- Search Bar -->
+            <div class="flex-grow-1" style="max-width: 400px;">
+                <div class="input-group">
+                    <span class="input-group-text bg-dark border-secondary-subtle text-secondary">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" class="form-control form-control-glass" placeholder="Search artwork, medium, tags...">
+                </div>
+            </div>
+
+            <!-- Upload Action Button -->
+            <a href="{{ url_for('portfolio.upload') }}" class="btn btn-gradient px-3 fw-semibold">
+                <i class="bi bi-plus-lg me-1"></i> Upload Asset
+            </a>
+        </div>
+
+        <!-- Cross-Database Aggregates Analytics Cards with Pure CSS Progress Rings -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mb-4">
+            <!-- 1. Total Uploads Card -->
+            <div class="col">
+                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between">
+                    <div>
+                        <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Total Uploads</small>
+                        <h3 class="fw-bold text-light mb-0 mt-1">{{ analytics.total_uploads }}</h3>
+                        <span class="badge bg-purple-subtle text-info mt-2 extra-small"><i class="bi bi-images me-1"></i> Gallery Assets</span>
+                    </div>
+                    <!-- Pure CSS Progress Ring -->
+                    <div class="progress-ring-wrapper">
+                        <svg class="progress-ring-svg">
+                            <circle class="progress-ring-bg" cx="32" cy="32" r="24"></circle>
+                            <circle class="progress-ring-fill" cx="32" cy="32" r="24" stroke="var(--accent-cyan)" stroke-dasharray="150" stroke-dashoffset="35"></circle>
+                        </svg>
+                        <span class="progress-ring-text text-cyan">{{ analytics.total_uploads }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Active Commissions Card -->
+            <div class="col">
+                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between">
+                    <div>
+                        <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Active Commissions</small>
+                        <h3 class="fw-bold text-warning mb-0 mt-1">{{ analytics.active_commissions }}</h3>
+                        <span class="badge bg-warning-subtle text-warning mt-2 extra-small"><i class="bi bi-clock-history me-1"></i> {{ analytics.total_commissions }} Total Orders</span>
+                    </div>
+                    <div class="progress-ring-wrapper">
+                        <svg class="progress-ring-svg">
+                            <circle class="progress-ring-bg" cx="32" cy="32" r="24"></circle>
+                            <circle class="progress-ring-fill" cx="32" cy="32" r="24" stroke="#F59E0B" stroke-dasharray="150" stroke-dashoffset="{{ 150 - (analytics.completion_rate * 1.5) }}"></circle>
+                        </svg>
+                        <span class="progress-ring-text text-warning">{{ analytics.active_commissions }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Projected Revenue Card -->
+            <div class="col">
+                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between">
+                    <div>
+                        <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Projected Revenue</small>
+                        <h3 class="fw-bold text-success mb-0 mt-1">${{ "%.2f"|format(analytics.projected_revenue) }}</h3>
+                        <span class="badge bg-success-subtle text-success mt-2 extra-small"><i class="bi bi-graph-up-arrow me-1"></i> Pipeline Value</span>
+                    </div>
+                    <div class="progress-ring-wrapper">
+                        <svg class="progress-ring-svg">
+                            <circle class="progress-ring-bg" cx="32" cy="32" r="24"></circle>
+                            <circle class="progress-ring-fill" cx="32" cy="32" r="24" stroke="#10B981" stroke-dasharray="150" stroke-dashoffset="25"></circle>
+                        </svg>
+                        <span class="progress-ring-text text-success">$</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Total AI Studio Uses Card -->
+            <div class="col">
+                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between">
+                    <div>
+                        <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Total AI Studio Uses</small>
+                        <h3 class="fw-bold text-purple mb-0 mt-1" style="color: var(--accent-purple);">{{ analytics.ai_studio_uses }}</h3>
+                        <span class="badge bg-purple-subtle text-info mt-2 extra-small"><i class="bi bi-magic me-1"></i> OpenCV & AI Tools</span>
+                    </div>
+                    <div class="progress-ring-wrapper">
+                        <svg class="progress-ring-svg">
+                            <circle class="progress-ring-bg" cx="32" cy="32" r="24"></circle>
+                            <circle class="progress-ring-fill" cx="32" cy="32" r="24" stroke="var(--accent-purple)" stroke-dasharray="150" stroke-dashoffset="40"></circle>
+                        </svg>
+                        <span class="progress-ring-text text-purple" style="color: var(--accent-purple);">AI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart.js Cross-Database Visual Analytics Module -->
+        <div class="row g-3 mb-4">
+            <!-- Chart 1: Category Distribution -->
+            <div class="col-12 col-lg-5">
+                <div class="frosted-glass p-4 h-100">
+                    <h6 class="fw-bold text-light mb-3"><i class="bi bi-pie-chart text-info me-2"></i>Portfolio Categories Distribution</h6>
+                    <div style="height: 220px; position: relative;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart 2: Commission Stage Breakdown -->
+            <div class="col-12 col-lg-7">
+                <div class="frosted-glass p-4 h-100">
+                    <h6 class="fw-bold text-light mb-3"><i class="bi bi-bar-chart-steps text-accent me-2"></i>Commission Pipeline Stages</h6>
+                    <div style="height: 220px; position: relative;">
+                        <canvas id="pipelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Filter Pills -->
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <button class="filter-pill active" onclick="filterMasonry('all')">All Assets</button>
+            <button class="filter-pill" onclick="filterMasonry('Digital 2D')">Digital 2D</button>
+            <button class="filter-pill" onclick="filterMasonry('Concept Art')">Concept Art</button>
+            <button class="filter-pill" onclick="filterMasonry('3D Render')">3D Render</button>
+            <button class="filter-pill" onclick="filterMasonry('Portrait')">Portrait</button>
+            <button class="filter-pill" onclick="filterMasonry('Oil Painting')">Oil Painting</button>
+        </div>
+
+        <!-- Pinterest-Style Dynamic Masonry Gallery -->
+        <div class="masonry-gallery" id="masonryGallery">
+            {% if artworks %}
+                {% for art in artworks %}
+                    <div class="masonry-item" data-category="{{ art.category or 'Digital 2D' }}">
+                        <img src="{{ url_for('static', filename='uploads/' + (art.thumbnail_url or art.image_url)) }}" 
+                             alt="{{ art.title }}" 
+                             class="masonry-img" 
+                             loading="lazy">
+                        
+                        <!-- Stylized Hover Overlay -->
+                        <div class="masonry-overlay">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1 extra-small">
+                                    {{ art.medium or 'Digital' }}
+                                </span>
+                                <!-- Like Utility Button -->
+                                <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleLike(this)">
+                                    <i class="bi bi-heart-fill"></i>
+                                </button>
+                            </div>
+
+                            <div>
+                                <h5 class="fw-bold text-white mb-1 text-truncate">{{ art.title }}</h5>
+                                <p class="text-secondary small mb-3 text-truncate">{{ art.author.name if art.author else current_user.name }}</p>
+                                
+                                <div class="d-flex gap-2">
+                                    <!-- Quick Preview Action Anchor -->
+                                    <button type="button" 
+                                            class="btn btn-glass btn-sm w-100 fw-medium quick-preview-btn" 
+                                            onclick="openPreviewModal('{{ art.title }}', '{{ url_for('static', filename='uploads/' + art.image_url) }}', '{{ art.medium or 'Digital 2D' }}', '{{ art.category or 'General' }}', '{{ art.description or 'No description provided.' }}', '{{ art.author.name if art.author else current_user.name }}')">
+                                        <i class="bi bi-eye me-1"></i> Quick Preview
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Demonstration Pinterest Masonry Cards if user hasn't uploaded yet -->
+                <div class="masonry-item" data-category="Concept Art">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="Nebula Fantasy" class="masonry-img">
+                    <div class="masonry-overlay">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1">Concept Art</span>
+                            <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-white mb-1">Nebula Fantasy</h5>
+                            <p class="text-secondary small mb-3">Digital 3D &bull; By ArtistryHub AI</p>
+                            <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openPreviewModal('Nebula Fantasy', 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80', 'Digital 3D', 'Concept Art', 'A vivid cosmic nebula created with generative shaders.', 'ArtistryHub AI')">
+                                <i class="bi bi-eye me-1"></i> Quick Preview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="masonry-item" data-category="Portrait">
+                    <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=600&q=80" alt="Cyberpunk Neon Portrait" class="masonry-img">
+                    <div class="masonry-overlay">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1">Portrait</span>
+                            <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-white mb-1">Cyberpunk Neon</h5>
+                            <p class="text-secondary small mb-3">Digital 2D &bull; By Studio K</p>
+                            <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openPreviewModal('Cyberpunk Neon', 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1200&q=80', 'Digital 2D', 'Portrait', 'Futuristic neon portrait with intense lighting dynamics.', 'Studio K')">
+                                <i class="bi bi-eye me-1"></i> Quick Preview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="masonry-item" data-category="3D Render">
+                    <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=600&q=80" alt="Abstract Prism Fluid" class="masonry-img">
+                    <div class="masonry-overlay">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1">3D Render</span>
+                            <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-white mb-1">Prism Fluid Sculpt</h5>
+                            <p class="text-secondary small mb-3">3D Render &bull; By Modernist</p>
+                            <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openPreviewModal('Prism Fluid Sculpt', 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=1200&q=80', '3D Render', 'Abstract', 'Fluid glass and prism refraction experiment.', 'Modernist')">
+                                <i class="bi bi-eye me-1"></i> Quick Preview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="masonry-item" data-category="Oil Painting">
+                    <img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=600&q=80" alt="Impressionist Sunset" class="masonry-img">
+                    <div class="masonry-overlay">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1">Oil Painting</span>
+                            <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-white mb-1">Impressionist Waves</h5>
+                            <p class="text-secondary small mb-3">Oil Painting &bull; By Elena V.</p>
+                            <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openPreviewModal('Impressionist Waves', 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1200&q=80', 'Oil Painting', 'Landscape', 'Textured oil impasto technique depicting ocean sunset.', 'Elena V.')">
+                                <i class="bi bi-eye me-1"></i> Quick Preview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+
+<!-- Quick Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content frosted-glass text-light border-secondary-subtle">
+            <div class="modal-header border-secondary-subtle">
+                <div>
+                    <h5 class="modal-title fw-bold" id="previewTitle">Artwork Preview</h5>
+                    <small class="text-secondary" id="previewAuthor"></small>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-3">
+                <img id="previewImage" src="" alt="Artwork Preview" class="img-fluid rounded border border-secondary mb-3" style="max-height: 500px; object-fit: contain;">
+                <div class="d-flex justify-content-center gap-2 mb-3">
+                    <span class="badge bg-purple-subtle text-info border border-info-subtle" id="previewMedium"></span>
+                    <span class="badge bg-dark border border-secondary text-secondary" id="previewCategory"></span>
+                </div>
+                <p class="text-secondary small max-w-lg mx-auto" id="previewDescription"></p>
+            </div>
+            <div class="modal-footer border-secondary-subtle justify-content-between">
+                <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleLike(this)">
+                    <i class="bi bi-heart-fill"></i>
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Sidebar Toggle on Mobile
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('dashboardSidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    if (toggleBtn && sidebar) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+        });
+    }
+
+    // Chart 1: Category Doughnut Chart
+    const ctxCat = document.getElementById('categoryChart');
+    if (ctxCat) {
+        new Chart(ctxCat, {
+            type: 'doughnut',
+            data: {
+                labels: {{ analytics.categories_labels|tojson }},
+                datasets: [{
+                    data: {{ analytics.categories_data|tojson }},
+                    backgroundColor: ['#8B5CF6', '#06B6D4', '#EC4899', '#F59E0B', '#10B981'],
+                    borderWidth: 2,
+                    borderColor: '#1E293B'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#94A3B8', font: { family: 'Outfit' } } }
+                }
+            }
+        });
+    }
+
+    // Chart 2: Commission Pipeline Bar Chart
+    const ctxPipe = document.getElementById('pipelineChart');
+    if (ctxPipe) {
+        new Chart(ctxPipe, {
+            type: 'bar',
+            data: {
+                labels: {{ analytics.stage_labels|tojson }},
+                datasets: [{
+                    label: 'Commissions',
+                    data: {{ analytics.stage_data|tojson }},
+                    backgroundColor: 'rgba(6, 182, 212, 0.7)',
+                    borderColor: '#06B6D4',
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { ticks: { color: '#94A3B8' }, grid: { display: false } },
+                    y: { ticks: { color: '#94A3B8', stepSize: 1 }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+});
+
+// Quick Preview Modal Handler
+function openPreviewModal(title, imgUrl, medium, category, description, author) {
+    document.getElementById('previewTitle').textContent = title;
+    document.getElementById('previewImage').src = imgUrl;
+    document.getElementById('previewMedium').textContent = medium;
+    document.getElementById('previewCategory').textContent = category;
+    document.getElementById('previewDescription').textContent = description;
+    document.getElementById('previewAuthor').textContent = 'Artist: ' + author;
+    
+    const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+    previewModal.show();
+}
+
+// Interactive Like Button Handler
+function toggleLike(btn) {
+    btn.classList.toggle('liked');
+    const icon = btn.querySelector('i');
+    if (btn.classList.contains('liked')) {
+        icon.style.transform = 'scale(1.3)';
+        setTimeout(() => icon.style.transform = 'scale(1)', 200);
+    }
+}
+
+// Category Filter Function
+function filterMasonry(category) {
+    const pills = document.querySelectorAll('.filter-pill');
+    pills.forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+
+    const items = document.querySelectorAll('.masonry-item');
+    items.forEach(item => {
+        if (category === 'all' || item.dataset.category === category) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

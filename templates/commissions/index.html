@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}Commission Manager - ArtistryHub{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-md-4">
+    <!-- Header Bar -->
+    <div class="frosted-glass p-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">Commission <span class="text-gradient">Manager</span></h2>
+            <p class="text-secondary mb-0 small">Kanban pipeline for managing active client requests, artwork stages, and project pricing.</p>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <div class="px-3 py-2 rounded-3 bg-dark border border-secondary text-end">
+                <small class="text-secondary d-block" style="font-size: 0.75rem;">Pipeline Value</small>
+                <span class="fw-bold text-success fs-5">${{ "%.2f"|format(total_value) }}</span>
+            </div>
+            <button type="button" class="btn btn-gradient px-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#createCommissionModal">
+                <i class="bi bi-plus-lg me-1"></i> New Commission
+            </button>
+        </div>
+    </div>
+
+    <!-- Kanban Board Grid Container -->
+    <div class="kanban-wrapper overflow-x-auto pb-4">
+        <div class="d-flex gap-3 align-items-start" style="min-width: 1300px;">
+            
+            {% for stage in stages %}
+                {% set stage_commissions = kanban_columns[stage] %}
+                <div class="kanban-column flex-fill frosted-glass p-3 rounded-4" style="width: 220px; min-width: 220px; background: rgba(30, 41, 59, 0.65);">
+                    <!-- Column Header -->
+                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom border-secondary-subtle">
+                        <div class="d-flex align-items-center gap-2">
+                            {% if stage == 'Requested' %}
+                                <span class="badge rounded-circle bg-warning p-1"> </span>
+                            {% elif stage == 'Accepted' %}
+                                <span class="badge rounded-circle bg-primary p-1"> </span>
+                            {% elif stage == 'Sketch' %}
+                                <span class="badge rounded-circle bg-info p-1"> </span>
+                            {% elif stage == 'Coloring' %}
+                                <span class="badge rounded-circle bg-purple p-1" style="background-color: var(--accent-purple);"> </span>
+                            {% elif stage == 'Revision' %}
+                                <span class="badge rounded-circle bg-danger p-1"> </span>
+                            {% elif stage == 'Delivered' %}
+                                <span class="badge rounded-circle bg-success p-1"> </span>
+                            {% endif %}
+                            <h6 class="fw-bold text-light mb-0">{{ stage }}</h6>
+                        </div>
+                        <span class="badge bg-dark text-secondary border border-secondary">{{ stage_commissions|length }}</span>
+                    </div>
+
+                    <!-- Column Cards Stack -->
+                    <div class="kanban-cards-container d-flex flex-column gap-3" style="min-height: 400px;" data-stage="{{ stage }}">
+                        {% for comm in stage_commissions %}
+                            <div class="kanban-card p-3 rounded-3 border border-secondary-subtle bg-dark bg-opacity-75 shadow-sm position-relative">
+                                <!-- Card Header -->
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="fw-bold text-light mb-0 text-truncate" title="{{ comm.title }}">{{ comm.title }}</h6>
+                                    <span class="text-success fw-bold small">${{ "%.2f"|format(comm.cost or 0) }}</span>
+                                </div>
+
+                                <!-- Client Details -->
+                                <p class="text-secondary small mb-2 text-truncate" style="font-size: 0.82rem;">
+                                    <i class="bi bi-person me-1"></i> {{ comm.client_name }}
+                                </p>
+
+                                {% if comm.deadline %}
+                                    <div class="mb-2">
+                                        <small class="badge bg-secondary-subtle text-info border border-info-subtle" style="font-size: 0.75rem;">
+                                            <i class="bi bi-calendar-event me-1"></i> {{ comm.deadline.strftime('%b %d') }}
+                                        </small>
+                                    </div>
+                                {% endif %}
+
+                                {% if comm.revision_count > 0 %}
+                                    <div class="mb-2">
+                                        <small class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size: 0.72rem;">
+                                            <i class="bi bi-arrow-repeat me-1"></i> {{ comm.revision_count }} Revisions
+                                        </small>
+                                    </div>
+                                {% endif %}
+
+                                <!-- Card Footer Actions -->
+                                <div class="mt-3 pt-2 border-top border-secondary-subtle d-flex justify-content-between align-items-center">
+                                    <!-- Status Selector Form -->
+                                    <form method="POST" action="{{ url_for('commissions.update_status', commission_id=comm.id) }}" class="d-inline">
+                                        <select name="status" class="form-select form-select-sm bg-dark border-secondary text-secondary py-0 px-2" style="font-size: 0.75rem; width: 110px;" onchange="this.form.submit()">
+                                            {% for s in stages %}
+                                                <option value="{{ s }}" {% if comm.status.value == s %}selected{% endif %}>Move: {{ s }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </form>
+
+                                    <!-- Edit Modal Launcher -->
+                                    <button type="button" class="btn btn-outline-info btn-sm py-0 px-2" style="font-size: 0.75rem;" 
+                                            onclick="openEditCommissionModal({{ comm.id }}, '{{ comm.title|escape }}', '{{ comm.client_name|escape }}', '{{ comm.client_email|escape }}', '{{ comm.cost or 0 }}', '{{ comm.deadline.strftime('%Y-%m-%d') if comm.deadline else '' }}', '{{ comm.client_notes|escape if comm.client_notes else '' }}', '{{ comm.revision_count }}')">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4 text-secondary small border border-dashed border-secondary rounded-3" style="font-size: 0.8rem;">
+                                No {{ stage.lower() }} items
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+<!-- Create Commission Modal -->
+<div class="modal fade" id="createCommissionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content frosted-glass text-light border-secondary-subtle">
+            <div class="modal-header border-secondary-subtle">
+                <h5 class="modal-title fw-bold">New Client Commission</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('commissions.create') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Commission Title *</label>
+                        <input type="text" name="title" class="form-control form-control-glass" placeholder="e.g. Full-Body Character Concept" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-secondary small fw-semibold">Client Name *</label>
+                            <input type="text" name="client_name" class="form-control form-control-glass" placeholder="Alex Rivers" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-secondary small fw-semibold">Client Email *</label>
+                            <input type="email" name="client_email" class="form-control form-control-glass" placeholder="alex@example.com" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-secondary small fw-semibold">Estimated Price ($)</label>
+                            <input type="number" step="0.01" name="cost" class="form-control form-control-glass" placeholder="250.00">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-secondary small fw-semibold">Target Deadline</label>
+                            <input type="date" name="deadline" class="form-control form-control-glass">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Initial Stage</label>
+                        <select name="status" class="form-select form-control-glass">
+                            {% for s in stages %}
+                                <option value="{{ s }}">{{ s }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Client Requirements & Notes</label>
+                        <textarea name="client_notes" class="form-control form-control-glass" rows="3" placeholder="Pose preferences, color specs, reference links..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary-subtle">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-gradient btn-sm px-3">Create Commission</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Commission Modal -->
+<div class="modal fade" id="editCommissionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content frosted-glass text-light border-secondary-subtle">
+            <div class="modal-header border-secondary-subtle">
+                <h5 class="modal-title fw-bold">Update Commission Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editCommissionForm" method="POST" action="">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Commission Title</label>
+                        <input type="text" id="edit_title" name="title" class="form-control form-control-glass" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-secondary small fw-semibold">Client Name</label>
+                            <input type="text" id="edit_client_name" name="client_name" class="form-control form-control-glass" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-secondary small fw-semibold">Client Email</label>
+                            <input type="email" id="edit_client_email" name="client_email" class="form-control form-control-glass" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 mb-3">
+                            <label class="form-label text-secondary small fw-semibold">Pricing ($)</label>
+                            <input type="number" step="0.01" id="edit_cost" name="cost" class="form-control form-control-glass">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <label class="form-label text-secondary small fw-semibold">Revisions</label>
+                            <input type="number" id="edit_revision_count" name="revision_count" class="form-control form-control-glass">
+                        </div>
+                        <div class="col-4 mb-3">
+                            <label class="form-label text-secondary small fw-semibold">Deadline</label>
+                            <input type="date" id="edit_deadline" name="deadline" class="form-control form-control-glass">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Client Notes</label>
+                        <textarea id="edit_client_notes" name="client_notes" class="form-control form-control-glass" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary-subtle justify-content-between">
+                    <button type="submit" formaction="" id="deleteBtn" method="POST" onclick="return confirm('Are you sure you want to delete this commission?')" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                    <div>
+                        <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-gradient btn-sm px-3">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openEditCommissionModal(id, title, clientName, clientEmail, cost, deadline, notes, revisions) {
+    const form = document.getElementById('editCommissionForm');
+    const deleteBtn = document.getElementById('deleteBtn');
+    
+    form.action = `/commissions/${id}/update`;
+    deleteBtn.setAttribute('formaction', `/commissions/${id}/delete`);
+
+    document.getElementById('edit_title').value = title;
+    document.getElementById('edit_client_name').value = clientName;
+    document.getElementById('edit_client_email').value = clientEmail;
+    document.getElementById('edit_cost').value = cost;
+    document.getElementById('edit_deadline').value = deadline;
+    document.getElementById('edit_client_notes').value = notes;
+    document.getElementById('edit_revision_count').value = revisions;
+
+    const modal = new bootstrap.Modal(document.getElementById('editCommissionModal'));
+    modal.show();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}404 Page Not Found - ArtistryHub{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="frosted-glass p-5 max-w-md mx-auto my-5">
+        <i class="bi bi-exclamation-triangle display-1 text-warning mb-3"></i>
+        <h2 class="fw-bold mb-2">Page Not Found</h2>
+        <p class="text-secondary small mb-4">The requested asset or resource could not be found in ArtistryHub.</p>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-gradient px-4">
+            <i class="bi bi-house-door me-1"></i> Return to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

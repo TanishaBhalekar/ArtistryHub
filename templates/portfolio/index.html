@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Portfolio Gallery - ArtistryHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="frosted-glass p-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">Portfolio <span class="text-gradient">Gallery</span></h2>
+            <p class="text-secondary mb-0 small">Manage your uploaded artworks, compressed originals, and 300px thumbnails</p>
+        </div>
+        <div>
+            <a href="{{ url_for('portfolio.upload') }}" class="btn btn-gradient px-3 fw-semibold">
+                <i class="bi bi-plus-lg me-1"></i> Upload Artwork
+            </a>
+        </div>
+    </div>
+
+    <!-- Artwork Gallery Grid -->
+    {% if artworks %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            {% for art in artworks %}
+                <div class="col">
+                    <div class="frosted-glass h-100 overflow-hidden d-flex flex-column">
+                        <!-- Thumbnail Image -->
+                        <div class="position-relative bg-dark text-center" style="height: 220px; overflow: hidden;">
+                            <img src="{{ url_for('static', filename='uploads/' + art.thumbnail_url) }}" 
+                                 alt="{{ art.title }}" 
+                                 class="w-100 h-100 object-fit-cover">
+                            <span class="position-absolute top-0 end-0 m-2 badge bg-dark bg-opacity-75 border border-secondary text-info">
+                                {{ art.medium or 'Digital' }}
+                            </span>
+                        </div>
+                        
+                        <!-- Card Body -->
+                        <div class="p-3 d-flex flex-column flex-grow-1">
+                            <h5 class="fw-bold text-truncate mb-1" title="{{ art.title }}">{{ art.title }}</h5>
+                            <p class="text-secondary small text-truncate mb-2">{{ art.category or 'General' }}</p>
+                            {% if art.description %}
+                                <p class="text-secondary small mb-3 flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                    {{ art.description }}
+                                </p>
+                            {% endif %}
+                            
+                            <div class="mt-auto pt-2 border-top border-secondary-subtle d-flex justify-content-between align-items-center">
+                                <small class="text-secondary">{{ art.created_at.strftime('%b %d, %Y') }}</small>
+                                <a href="{{ url_for('static', filename='uploads/' + art.image_url) }}" 
+                                   target="_blank" 
+                                   class="btn btn-outline-info btn-sm">
+                                    <i class="bi bi-arrows-fullscreen"></i> View Original
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="frosted-glass p-5 text-center my-4">
+            <i class="bi bi-images display-3 text-secondary mb-3"></i>
+            <h4>No Artwork Uploaded Yet</h4>
+            <p class="text-secondary mb-4">Start showcasing your creations by uploading your first portfolio artwork.</p>
+            <a href="{{ url_for('portfolio.upload') }}" class="btn btn-gradient px-4 py-2">
+                <i class="bi bi-cloud-upload me-1"></i> Upload Artwork Now
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

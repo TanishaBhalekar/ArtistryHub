@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Style Explorer - ArtistryHub AI Studio{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="frosted-glass p-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-journal-album text-accent me-2"></i>Style <span class="text-gradient">Explorer</span></h2>
+            <p class="text-secondary mb-0 small">Static recommendation database indexing historic & modern artistic directions, master artists, and prompt keywords.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Category Filter Pills -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="{{ url_for('ai.style_explorer', category='all') }}" class="filter-pill {% if selected_category == 'all' or not selected_category %}active{% endif %}">All Movements</a>
+        {% for cat in categories %}
+            <a href="{{ url_for('ai.style_explorer', category=cat) }}" class="filter-pill {% if selected_category == cat %}active{% endif %}">{{ cat }}</a>
+        {% endfor %}
+    </div>
+
+    <!-- Style Database Grid -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for style in styles %}
+            <div class="col">
+                <div class="frosted-glass h-100 p-4 d-flex flex-column justify-content-between position-relative overflow-hidden">
+                    <div>
+                        <!-- Badge & Era -->
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-purple-subtle text-info border border-info-subtle">{{ style.category }}</span>
+                            <small class="text-secondary font-monospace">{{ style.era }}</small>
+                        </div>
+
+                        <!-- Title -->
+                        <h4 class="fw-bold text-light mb-2">{{ style.title }}</h4>
+
+                        <!-- Description -->
+                        <p class="text-secondary small mb-3">{{ style.description }}</p>
+
+                        <!-- Key Masters -->
+                        <div class="mb-3">
+                            <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider d-block mb-1">Key Master Artists</small>
+                            <span class="text-info small fw-medium"><i class="bi bi-brush me-1"></i> {{ style.masters }}</span>
+                        </div>
+
+                        <!-- Swatch Palette Bar -->
+                        <div class="mb-3">
+                            <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider d-block mb-1">Characteristic Color Palette</small>
+                            <div class="d-flex rounded-3 overflow-hidden border border-secondary" style="height: 20px;">
+                                {% for hex in style.palette %}
+                                    <div class="flex-fill" style="background-color: {{ hex }};" title="{{ hex }}"></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Prompt Keywords Box -->
+                        <div class="mb-3">
+                            <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider d-block mb-1">Recommended Prompt Keywords</small>
+                            <div class="p-2 rounded bg-dark border border-secondary-subtle font-monospace text-success extra-small">
+                                {{ style.prompt_keywords }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Copy Keyword Action Button -->
+                    <div class="pt-3 border-top border-secondary-subtle">
+                        <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="copyKeywords('{{ style.prompt_keywords|escape }}', this)">
+                            <i class="bi bi-clipboard me-1"></i> Copy Style Prompt Keywords
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function copyKeywords(keywords, btn) {
+    navigator.clipboard.writeText(keywords).then(() => {
+        const origText = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check2 text-success me-1"></i> Keywords Copied!';
+        setTimeout(() => btn.innerHTML = origText, 2000);
+    });
+}
+</script>
+{% endblock %}

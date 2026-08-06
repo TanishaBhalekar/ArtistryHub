@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Composition Guide - ArtistryHub AI Studio{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="frosted-glass p-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-bounding-box text-accent me-2"></i>Composition <span class="text-gradient">Guide</span></h2>
+            <p class="text-secondary mb-0 small">Analyze layout sketches with OpenCV Canny edge detection and focal point centroid tracking with Rule-of-Thirds grid overlays.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Panel: Upload / Select Sketch -->
+        <div class="col-12 col-lg-5">
+            <div class="frosted-glass p-4 h-100">
+                <h5 class="fw-bold mb-3"><i class="bi bi-cloud-arrow-up text-info me-2"></i>Layout Sketch Input</h5>
+                
+                <form id="compForm" method="POST" action="{{ url_for('ai.analyze_comp') }}" enctype="multipart/form-data">
+                    <div class="upload-dropzone p-4 text-center border border-dashed border-secondary rounded-3 bg-dark-subtle mb-3">
+                        <i class="bi bi-vector-pen display-5 text-accent mb-2"></i>
+                        <p class="small text-secondary mb-2">Upload layout sketch or draft drawing</p>
+                        <input type="file" name="image" id="compImageInput" class="form-control form-control-glass" accept="image/*" onchange="previewCompImage(this)">
+                    </div>
+
+                    {% if artworks %}
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small fw-semibold">Or select from Portfolio</label>
+                            <select name="artwork_id" class="form-select form-control-glass">
+                                <option value="" selected>-- Pick uploaded artwork --</option>
+                                {% for art in artworks %}
+                                    <option value="{{ art.id }}">{{ art.title }} ({{ art.medium }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-gradient w-100 py-2 fw-semibold">
+                        <i class="bi bi-bounding-box-circles me-1"></i> Analyze Composition & Grid
+                    </button>
+                </form>
+
+                <!-- Input Preview -->
+                <div id="sketchPreviewContainer" class="mt-4 pt-3 border-top border-secondary-subtle d-none">
+                    <h6 class="fw-semibold text-secondary small mb-2">Uploaded Input Sketch</h6>
+                    <img id="sketchPreviewImage" src="#" alt="Input Sketch" class="img-fluid rounded border border-secondary w-100" style="max-height: 200px; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Composition Guide Overlay & Metrics -->
+        <div class="col-12 col-lg-7">
+            <div class="frosted-glass p-4 h-100">
+                <h5 class="fw-bold mb-3"><i class="bi bi-eye text-accent me-2"></i>OpenCV Rule-of-Thirds & Focal Overlay</h5>
+
+                {% if metrics %}
+                    <!-- Composition Metrics Badges -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-4">
+                            <div class="p-3 rounded bg-dark border border-secondary text-center">
+                                <small class="text-secondary extra-small d-block mb-1">Rule of Thirds Score</small>
+                                <span class="fw-bold fs-4 text-info">{{ metrics.alignment_score }}%</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-3 rounded bg-dark border border-secondary text-center">
+                                <small class="text-secondary extra-small d-block mb-1">Edge Density</small>
+                                <span class="fw-bold fs-4 text-purple" style="color: var(--accent-purple);">{{ metrics.edge_density }}%</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-3 rounded bg-dark border border-secondary text-center">
+                                <small class="text-secondary extra-small d-block mb-1">Focal Centroid</small>
+                                <span class="fw-bold fs-6 text-success d-block mt-1">({{ metrics.focal_x }}, {{ metrics.focal_y }})</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overlay Result Image -->
+                    <div class="text-center p-3 bg-dark rounded border border-secondary mb-3">
+                        <img src="{{ guide_url }}" alt="Composition Guide Overlay" class="img-fluid rounded shadow" style="max-height: 420px; object-fit: contain;">
+                    </div>
+
+                    <div class="alert alert-dark border-secondary text-secondary small d-flex align-items-center gap-2 mb-0">
+                        <i class="bi bi-info-circle-fill text-info fs-5"></i>
+                        <div>
+                            <strong>OpenCV Analysis:</strong> Glowing cyan lines represent Rule-of-Thirds guidelines. The purple target reticle marks the tracked focal centroid.
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Empty State -->
+                    <div class="text-center py-5 my-3">
+                        <i class="bi bi-grid-3x3-gap display-3 text-secondary mb-3"></i>
+                        <h5>No Composition Analysis Executed</h5>
+                        <p class="text-secondary small max-w-md mx-auto">Upload a rough layout sketch or drawing to run Canny edge extraction and overlay dynamic composition guidelines.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewCompImage(input) {
+    const container = document.getElementById('sketchPreviewContainer');
+    const img = document.getElementById('sketchPreviewImage');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            img.src = e.target.result;
+            container.classList.remove('d-none');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

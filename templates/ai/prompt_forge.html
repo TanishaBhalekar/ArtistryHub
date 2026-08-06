@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Prompt Forge - ArtistryHub AI Studio{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="frosted-glass p-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-cpu text-accent me-2"></i>Prompt <span class="text-gradient">Forge</span></h2>
+            <p class="text-secondary mb-0 small">Construct detailed descriptive prompt matrices by selecting modular conditions (Theme, Mood, Style, Lighting, Camera).</p>
+        </div>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Forge Panel Grid -->
+    <div class="row g-4">
+        <!-- Left Panel: Dropdown Controls -->
+        <div class="col-12 col-lg-5">
+            <div class="frosted-glass p-4 h-100">
+                <h5 class="fw-bold mb-3"><i class="bi bi-sliders text-info me-2"></i>Forge Parameters</h5>
+                
+                <form id="forgeForm" method="POST" action="{{ url_for('ai.forge_prompt') }}">
+                    <!-- Theme -->
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Theme / Subject</label>
+                        <select name="theme" id="themeSelect" class="form-select form-control-glass" onchange="autoForge()">
+                            {% for t in themes %}
+                                <option value="{{ t }}" {% if result.theme == t %}selected{% endif %}>{{ t }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Mood -->
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Mood & Atmosphere</label>
+                        <select name="mood" id="moodSelect" class="form-select form-control-glass" onchange="autoForge()">
+                            {% for m in moods %}
+                                <option value="{{ m }}" {% if result.mood == m %}selected{% endif %}>{{ m }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Style -->
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Artistic Style</label>
+                        <select name="style" id="styleSelect" class="form-select form-control-glass" onchange="autoForge()">
+                            {% for s in styles %}
+                                <option value="{{ s }}" {% if result.style == s %}selected{% endif %}>{{ s }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Lighting -->
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Lighting Dynamics</label>
+                        <select name="lighting" id="lightingSelect" class="form-select form-control-glass" onchange="autoForge()">
+                            {% for l in lightings %}
+                                <option value="{{ l }}" {% if result.lighting == l %}selected{% endif %}>{{ l }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Camera -->
+                    <div class="mb-4">
+                        <label class="form-label text-secondary small fw-semibold">Camera Directive</label>
+                        <select name="camera" id="cameraSelect" class="form-select form-control-glass" onchange="autoForge()">
+                            {% for c in cameras %}
+                                <option value="{{ c }}" {% if result.camera == c %}selected{% endif %}>{{ c }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient w-100 py-2 fw-semibold">
+                        <i class="bi bi-lightning-charge me-1"></i> Forge Prompt Matrix
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Panel: Constructed Output -->
+        <div class="col-12 col-lg-7">
+            <div class="frosted-glass p-4 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0"><i class="bi bi-file-earmark-code text-accent me-2"></i>Constructed Prompt</h5>
+                        <span id="promptCopyToast" class="badge bg-success opacity-0 transition-all text-white px-3 py-1">
+                            <i class="bi bi-check2 me-1"></i> Copied to Clipboard!
+                        </span>
+                    </div>
+
+                    <!-- Primary Constructed Prompt Box -->
+                    <div class="p-3 rounded-3 bg-dark border border-secondary mb-3 position-relative">
+                        <p class="font-monospace text-light mb-0 fs-6" id="constructedPromptText" style="line-height: 1.6;">
+                            {{ result.prompt }}
+                        </p>
+                        <button type="button" class="btn btn-glass action-btn-circle position-absolute top-0 end-0 m-2" onclick="copyPromptText()" title="Copy Prompt">
+                            <i class="bi bi-clipboard" id="promptCopyIcon"></i>
+                        </button>
+                    </div>
+
+                    <!-- Negative Prompt Box -->
+                    <div class="mb-3">
+                        <label class="form-label text-secondary extra-small fw-semibold text-uppercase tracking-wider">Negative Prompt</label>
+                        <div class="p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary-subtle">
+                            <small class="font-monospace text-muted" id="negativePromptText">{{ result.negative_prompt }}</small>
+                        </div>
+                    </div>
+
+                    <!-- Tags & Parameters -->
+                    <div class="mb-3">
+                        <label class="form-label text-secondary extra-small fw-semibold text-uppercase tracking-wider">Style Tokens</label>
+                        <div class="d-flex flex-wrap gap-2" id="promptTagsContainer">
+                            {% for tag in result.tags %}
+                                <span class="badge bg-purple-subtle text-info border border-info-subtle px-2 py-1">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Quick Copy Button -->
+                <div class="pt-3 border-top border-secondary-subtle text-end">
+                    <button type="button" class="btn btn-gradient px-4" onclick="copyPromptText()">
+                        <i class="bi bi-clipboard-check me-1"></i> Copy Constructed Prompt
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyPromptText() {
+    const text = document.getElementById('constructedPromptText').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('promptCopyToast');
+        const icon = document.getElementById('promptCopyIcon');
+        toast.classList.remove('opacity-0');
+        toast.classList.add('opacity-100');
+        if (icon) icon.className = 'bi bi-check-lg text-success';
+        
+        setTimeout(() => {
+            toast.classList.remove('opacity-100');
+            toast.classList.add('opacity-0');
+            if (icon) icon.className = 'bi bi-clipboard';
+        }, 2000);
+    });
+}
+
+function autoForge() {
+    const form = document.getElementById('forgeForm');
+    const formData = new FormData(form);
+
+    fetch('/ai/forge-prompt', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('constructedPromptText').innerText = data.data.prompt;
+            document.getElementById('negativePromptText').innerText = data.data.negative_prompt;
+            
+            const tagsContainer = document.getElementById('promptTagsContainer');
+            tagsContainer.innerHTML = data.data.tags.map(t => `<span class="badge bg-purple-subtle text-info border border-info-subtle px-2 py-1">${t}</span>`).join(' ');
+        }
+    })
+    .catch(err => console.error(err));
+}
+</script>
+{% endblock %}
