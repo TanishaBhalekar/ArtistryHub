@@ -236,6 +236,19 @@ a.link-accent:hover {
     z-index: 90;
 }
 
+.sidebar-section-header {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.extra-small {
+    font-size: 0.72rem;
+}
+
 .sidebar-nav-list {
     list-style: none;
     padding: 0;

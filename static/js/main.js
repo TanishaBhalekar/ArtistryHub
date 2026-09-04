@@ -50,6 +50,18 @@ document.addEventListener('DOMContentLoaded', function () {
     if (toggleBtn) {
         toggleBtn.addEventListener('click', toggleTheme);
     }
+
+    // Sidebar drawer toggle listener
+    const sidebar = document.getElementById('appSidebar') || document.getElementById('dashboardSidebar');
+    const toggleBtns = document.querySelectorAll('#sidebarToggle, .sidebar-toggle-btn');
+    if (sidebar && toggleBtns.length > 0) {
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                sidebar.classList.toggle('show');
+            });
+        });
+    }
 });
 
 // Expose globally

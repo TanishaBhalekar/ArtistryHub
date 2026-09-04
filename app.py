@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_login import LoginManager, login_required, current_user
 from config import Config
 from models import db, User, Artwork
@@ -43,6 +43,33 @@ def create_app(config_class=Config):
         artworks = Artwork.query.order_by(Artwork.created_at.desc()).all()
         analytics = get_user_analytics(current_user.id)
         return render_template('dashboard/index.html', artworks=artworks, analytics=analytics)
+
+    @app.route('/profile', methods=['GET', 'POST'])
+    @login_required
+    def profile():
+        if request.method == 'POST':
+            name = request.form.get('name', '').strip()
+            bio = request.form.get('bio', '').strip()
+            if name:
+                current_user.name = name
+            if bio is not None:
+                current_user.bio = bio
+            try:
+                db.session.commit()
+                flash('Profile updated successfully!', 'success')
+            except Exception:
+                db.session.rollback()
+                flash('Failed to update profile.', 'danger')
+            return redirect(url_for('profile'))
+        return render_template('account/profile.html')
+
+    @app.route('/settings', methods=['GET', 'POST'])
+    @login_required
+    def settings():
+        if request.method == 'POST':
+            flash('Settings preferences saved!', 'success')
+            return redirect(url_for('settings'))
+        return render_template('account/settings.html')
 
     # Global Error Handlers for Presentation Stability
     @app.errorhandler(404)

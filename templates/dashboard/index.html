@@ -3,110 +3,19 @@
 {% block title %}Dashboard - ArtistryHub{% endblock %}
 
 {% block content %}
-<div class="dashboard-wrapper">
-    <!-- Sidebar Navigation with Glassmorphism -->
-    <aside class="sidebar-navigation" id="dashboardSidebar">
+<div class="container-fluid p-0">
+    <!-- Dashboard Header -->
+    <div class="frosted-glass p-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
         <div>
-            <div class="d-flex align-items-center gap-2 mb-4 px-2">
-                <i class="bi bi-grid-1x2-fill text-accent fs-4"></i>
-                <span class="fw-bold fs-5 logo-text">Artistry<span class="text-accent">Hub</span></span>
-            </div>
-
-            <ul class="sidebar-nav-list">
-                <li class="sidebar-nav-item">
-                    <a href="{{ url_for('dashboard') }}" class="sidebar-nav-link active">
-                        <i class="bi bi-house-door"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a href="{{ url_for('portfolio.index') }}" class="sidebar-nav-link">
-                        <i class="bi bi-images"></i>
-                        <span>Portfolio Gallery</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a href="{{ url_for('portfolio.upload') }}" class="sidebar-nav-link">
-                        <i class="bi bi-cloud-arrow-up"></i>
-                        <span>Upload Artwork</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a href="{{ url_for('commissions.index') }}" class="sidebar-nav-link">
-                        <i class="bi bi-briefcase"></i>
-                        <span>Commissions</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a href="{{ url_for('ai.palette_lab') }}" class="sidebar-nav-link">
-                        <i class="bi bi-palette"></i>
-                        <span>Palette Lab</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a href="{{ url_for('ai.prompt_forge') }}" class="sidebar-nav-link">
-                        <i class="bi bi-cpu"></i>
-                        <span>Prompt Forge</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a href="{{ url_for('ai.style_explorer') }}" class="sidebar-nav-link">
-                        <i class="bi bi-journal-album"></i>
-                        <span>Style Explorer</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a href="{{ url_for('ai.composition_guide') }}" class="sidebar-nav-link">
-                        <i class="bi bi-bounding-box"></i>
-                        <span>Composition Guide</span>
-                    </a>
-                </li>
-            </ul>
+            <h2 class="fw-bold mb-1">Creator <span class="text-gradient">Dashboard</span></h2>
+            <p class="text-secondary mb-0 small">Overview of your portfolio analytics, active client commissions, and AI Studio assets.</p>
         </div>
-
-        <!-- User Profile Snippet in Sidebar -->
-        <div class="sidebar-user-footer">
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-2 overflow-hidden">
-                    <div class="bg-gradient text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-6" style="width: 38px; height: 38px; min-width: 38px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));">
-                        {{ current_user.username[:2].upper() }}
-                    </div>
-                    <div class="text-truncate">
-                        <div class="fw-semibold text-truncate small">{{ current_user.name }}</div>
-                        <div class="text-secondary extra-small text-truncate" style="font-size: 0.75rem;">@{{ current_user.username }}</div>
-                    </div>
-                </div>
-                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger btn-sm p-1 rounded-circle ms-1" title="Logout" style="width: 32px; height: 32px;">
-                    <i class="bi bi-box-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Main Viewport -->
-    <main class="main-viewport">
-        <!-- Top Toolbar & Search -->
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
-            <!-- Toggle Sidebar for Mobile -->
-            <button class="btn btn-outline-secondary d-lg-none" type="button" id="sidebarToggle">
-                <i class="bi bi-list"></i> Menu
-            </button>
-
-            <!-- Search Bar -->
-            <div class="flex-grow-1" style="max-width: 400px;">
-                <div class="input-group">
-                    <span class="input-group-text bg-dark border-secondary-subtle text-secondary">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input type="text" class="form-control form-control-glass" placeholder="Search artwork, medium, tags...">
-                </div>
-            </div>
-
-            <!-- Upload Action Button -->
+        <div class="d-flex gap-2">
             <a href="{{ url_for('portfolio.upload') }}" class="btn btn-gradient px-3 fw-semibold">
                 <i class="bi bi-plus-lg me-1"></i> Upload Asset
             </a>
         </div>
+    </div>
 
         <!-- Cross-Database Aggregates Analytics Cards with Pure CSS Progress Rings -->
         <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mb-4 animate-fade-in">
@@ -326,8 +235,6 @@
                 </div>
             {% endif %}
         </div>
-    </main>
-</div>
 
 <!-- Quick Preview Modal -->
 <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
