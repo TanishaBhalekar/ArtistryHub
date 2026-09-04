@@ -4,6 +4,6 @@ db = SQLAlchemy()
 
 from models.user import User
 from models.artwork import Artwork
-from models.commission import Commission, CommissionStatus, PaymentStatus
+from models.commission import Commission, CommissionStatus, PaymentStatus, CommissionDeliverable
 
-__all__ = ['db', 'User', 'Artwork', 'Commission', 'CommissionStatus', 'PaymentStatus']
+__all__ = ['db', 'User', 'Artwork', 'Commission', 'CommissionStatus', 'PaymentStatus', 'CommissionDeliverable']

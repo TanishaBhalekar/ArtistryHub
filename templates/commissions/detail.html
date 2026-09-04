@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}{{ commission.title }} - Commission Details | ArtistryHub{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-md-4">
+    <!-- Breadcrumb & Top Bar -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 animate-fade-in">
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ url_for('commissions.index') }}" class="btn btn-glass btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to Kanban
+            </a>
+            <span class="text-secondary">/</span>
+            <span class="fw-semibold text-light">{{ commission.title }}</span>
+        </div>
+        
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-purple-subtle text-info border border-info-subtle px-3 py-2">
+                {{ commission.medium or 'Digital 2D' }}
+            </span>
+            <span class="badge bg-dark border border-secondary text-light px-3 py-2">
+                Status: {{ commission.status.value }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Main 2-Column Grid -->
+    <div class="row g-4 mb-4">
+        <!-- Left Main Section (8 cols) -->
+        <div class="col-12 col-lg-8">
+            
+            <!-- Project Header & Description -->
+            <div class="frosted-glass p-4 mb-4 animate-fade-in">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h3 class="fw-bold text-light mb-1">{{ commission.title }}</h3>
+                        <p class="text-secondary small mb-0">Client: <strong class="text-info">{{ commission.client_name }}</strong> ({{ commission.client_email }})</p>
+                    </div>
+                    <span class="badge bg-success-subtle text-success fs-6">${{ "%.2f"|format(commission.cost) }}</span>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="fw-semibold text-secondary extra-small text-uppercase tracking-wider mb-2">Project Requirements & Scope</h6>
+                    <div class="p-3 rounded bg-dark border border-secondary text-light small" style="line-height: 1.6;">
+                        {{ commission.description or 'No scope details provided.' }}
+                    </div>
+                </div>
+
+                {% if commission.client_notes %}
+                    <div class="mb-2">
+                        <h6 class="fw-semibold text-secondary extra-small text-uppercase tracking-wider mb-2">Client Notes & Reference Links</h6>
+                        <div class="p-3 rounded bg-dark border border-secondary text-muted small">
+                            {{ commission.client_notes }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Milestone Checklist -->
+            <div class="frosted-glass p-4 mb-4 animate-fade-in">
+                <h5 class="fw-bold mb-3"><i class="bi bi-ui-checks text-accent me-2"></i>Milestone Checklist</h5>
+                
+                <form method="POST" action="{{ url_for('commissions.update_milestones', commission_id=commission.id) }}">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 mb-3">
+                        <div class="col">
+                            <div class="p-3 rounded bg-dark border border-secondary text-center">
+                                <div class="form-check d-inline-block text-start mb-2">
+                                    <input class="form-check-input" type="checkbox" name="accepted_done" id="accepted_done" {% if commission.accepted_done %}checked{% endif %} onchange="this.form.submit()">
+                                    <label class="form-check-label fw-bold small" for="accepted_done">1. Accepted</label>
+                                </div>
+                                <small class="text-muted d-block extra-small">Order Approved</small>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="p-3 rounded bg-dark border border-secondary text-center">
+                                <div class="form-check d-inline-block text-start mb-2">
+                                    <input class="form-check-input" type="checkbox" name="sketch_done" id="sketch_done" {% if commission.sketch_done %}checked{% endif %} onchange="this.form.submit()">
+                                    <label class="form-check-label fw-bold small" for="sketch_done">2. Concept / Sketch</label>
+                                </div>
+                                <small class="text-muted d-block extra-small">Sketch Approved</small>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="p-3 rounded bg-dark border border-secondary text-center">
+                                <div class="form-check d-inline-block text-start mb-2">
+                                    <input class="form-check-input" type="checkbox" name="render_done" id="render_done" {% if commission.render_done %}checked{% endif %} onchange="this.form.submit()">
+                                    <label class="form-check-label fw-bold small" for="render_done">3. Final Render</label>
+                                </div>
+                                <small class="text-muted d-block extra-small">Coloring & Polish</small>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="p-3 rounded bg-dark border border-secondary text-center">
+                                <div class="form-check d-inline-block text-start mb-2">
+                                    <input class="form-check-input" type="checkbox" name="delivered_done" id="delivered_done" {% if commission.delivered_done %}checked{% endif %} onchange="this.form.submit()">
+                                    <label class="form-check-label fw-bold small" for="delivered_done">4. Delivered</label>
+                                </div>
+                                <small class="text-muted d-block extra-small">Final Handoff</small>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Deliverable Upload Zone with Versioning (v1, v2, final) -->
+            <div class="frosted-glass p-4 animate-fade-in">
+                <h5 class="fw-bold mb-3"><i class="bi bi-cloud-arrow-up text-cyan me-2"></i>Deliverables & Iteration Upload Zone</h5>
+                
+                <form method="POST" action="{{ url_for('commissions.upload_deliverable', commission_id=commission.id) }}" enctype="multipart/form-data" class="mb-4">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label text-secondary small fw-semibold">Revision Versioning</label>
+                            <select name="version_tag" class="form-select form-control-glass">
+                                <option value="v1" selected>Version 1 (Initial Sketch)</option>
+                                <option value="v2">Version 2 (Refined Color)</option>
+                                <option value="v3">Version 3 (Polish)</option>
+                                <option value="final">FINAL DELIVERABLE</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <label class="form-label text-secondary small fw-semibold">Iteration Notes</label>
+                            <input type="text" name="notes" class="form-control form-control-glass" placeholder="e.g. Adjusted character lighting and background contrast...">
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <input type="file" name="file" class="form-control form-control-glass" accept="image/*" required>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <button type="submit" class="btn btn-gradient w-100 h-100 fw-semibold">
+                                Upload Iteration
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Iteration Deliverables Log -->
+                <h6 class="fw-semibold text-secondary extra-small text-uppercase tracking-wider mb-2">Uploaded Deliverable History</h6>
+                {% if deliverables %}
+                    <div class="d-flex flex-column gap-2">
+                        {% for item in deliverables %}
+                            <div class="p-3 rounded bg-dark border border-secondary d-flex align-items-center justify-content-between gap-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="badge {% if item.version_tag == 'final' %}bg-success{% else %}bg-purple-subtle text-info{% endif %} fw-bold px-2 py-1">
+                                        {{ item.version_tag.upper() }}
+                                    </span>
+                                    <div>
+                                        <div class="fw-bold text-light small">{{ item.filename }}</div>
+                                        {% if item.notes %}
+                                            <div class="text-secondary extra-small">{{ item.notes }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <small class="text-muted extra-small me-2">{{ item.created_at.strftime('%b %d, %H:%M') }}</small>
+                                    <a href="{{ url_for('static', filename='uploads/' + item.filename) }}" target="_blank" class="btn btn-outline-info btn-sm">
+                                        <i class="bi bi-eye me-1"></i> Preview
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-secondary extra-small border border-dashed border-secondary rounded">
+                        No deliverable iterations uploaded yet.
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- Right Sidebar Rail (4 cols) -->
+        <div class="col-12 col-lg-4">
+            
+            <!-- Quick Action Buttons -->
+            <div class="frosted-glass p-4 mb-4 animate-fade-in">
+                <h5 class="fw-bold mb-3"><i class="bi bi-lightning-charge text-warning me-2"></i>Workflow Actions</h5>
+                
+                <div class="d-flex flex-column gap-2 mb-3">
+                    <form method="POST" action="{{ url_for('commissions.quick_action', commission_id=commission.id) }}">
+                        <input type="hidden" name="action" value="submit_review">
+                        <button type="submit" class="btn btn-glass w-100 py-2 text-start d-flex align-items-center justify-content-between">
+                            <span><i class="bi bi-send text-info me-2"></i> Submit for Review</span>
+                            <i class="bi bi-chevron-right extra-small text-secondary"></i>
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{{ url_for('commissions.quick_action', commission_id=commission.id) }}">
+                        <input type="hidden" name="action" value="request_payment">
+                        <button type="submit" class="btn btn-glass w-100 py-2 text-start d-flex align-items-center justify-content-between">
+                            <span><i class="bi bi-credit-card text-warning me-2"></i> Request Payment</span>
+                            <i class="bi bi-chevron-right extra-small text-secondary"></i>
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{{ url_for('commissions.quick_action', commission_id=commission.id) }}">
+                        <input type="hidden" name="action" value="mark_delivered">
+                        <button type="submit" class="btn btn-gradient w-100 py-2 text-center fw-semibold">
+                            <i class="bi bi-check2-circle me-1"></i> Mark Delivered & Complete
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Client Info Card -->
+            <div class="frosted-glass p-4 mb-4 animate-fade-in">
+                <h5 class="fw-bold mb-3"><i class="bi bi-person text-accent me-2"></i>Client Information</h5>
+                <div class="d-flex align-items-center gap-3 mb-3 p-3 rounded bg-dark border border-secondary">
+                    <div class="bg-gradient text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-5" style="width: 44px; height: 44px; min-width: 44px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));">
+                        {{ commission.client_name[:2].upper() }}
+                    </div>
+                    <div>
+                        <div class="fw-bold text-light">{{ commission.client_name }}</div>
+                        <div class="text-secondary small">{{ commission.client_email }}</div>
+                    </div>
+                </div>
+
+                <a href="mailto:{{ commission.client_email }}?subject=Update regarding {{ commission.title }}" class="btn btn-outline-info btn-sm w-100 fw-medium">
+                    <i class="bi bi-envelope me-1"></i> Email Client
+                </a>
+            </div>
+
+            <!-- Financials Card -->
+            <div class="frosted-glass p-4 mb-4 animate-fade-in">
+                <h5 class="fw-bold mb-3"><i class="bi bi-cash-stack text-success me-2"></i>Financial Breakdown</h5>
+                
+                <div class="p-3 rounded bg-dark border border-secondary mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary small">Agreed Price:</span>
+                        <strong class="text-success">${{ "%.2f"|format(commission.cost) }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary small">Payment Status:</span>
+                        <span class="badge bg-purple-subtle text-info">{{ commission.payment_status.value }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between pt-2 border-top border-secondary-subtle">
+                        <span class="text-light small fw-bold">Remaining Balance:</span>
+                        <strong class="text-warning">
+                            {% if commission.payment_status.value == 'paid_in_full' %}$0.00{% else %}${{ "%.2f"|format(commission.cost) }}{% endif %}
+                        </strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity & Revision Timeline Log -->
+            <div class="frosted-glass p-4 animate-fade-in">
+                <h6 class="fw-bold text-light mb-3"><i class="bi bi-clock-history text-info me-2"></i>Activity Timeline</h6>
+                <div class="d-flex flex-column gap-2 border-start border-secondary ps-3 ms-2">
+                    <div class="position-relative">
+                        <div class="small fw-semibold text-light">Commission Created</div>
+                        <div class="extra-small text-muted">{{ commission.created_at.strftime('%b %d, %Y - %H:%M') }}</div>
+                    </div>
+                    <div class="position-relative mt-2">
+                        <div class="small fw-semibold text-info">Current Stage: {{ commission.status.value }}</div>
+                        <div class="extra-small text-muted">Last updated {{ commission.updated_at.strftime('%b %d, %H:%M') }}</div>
+                    </div>
+                    <div class="position-relative mt-2">
+                        <div class="small fw-semibold text-warning">Revision Count: {{ commission.revision_count }}</div>
+                        <div class="extra-small text-muted">Iterative updates uploaded</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
