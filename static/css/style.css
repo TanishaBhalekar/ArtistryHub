@@ -524,6 +524,54 @@ a.link-accent:hover {
     border-radius: 12px;
 }
 
+/* Artist Daily Workflow Component Styles */
+.hero-greeting-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+}
+
+.summary-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--card-border);
+}
+
+.action-task-card {
+    background: var(--card-surface);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-task-card:hover {
+    border-color: var(--accent-purple);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.18);
+}
+
+.pipeline-mini-step {
+    flex: 1;
+    background: var(--card-surface);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 0.9rem 1.1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.pipeline-mini-step.active-stage {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 4px 16px rgba(6, 182, 212, 0.2);
+}
+
 /* Responsive Hide Sidebar */
 @media (max-width: 991.98px) {
     .sidebar-navigation {
