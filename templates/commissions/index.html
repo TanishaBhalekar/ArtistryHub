@@ -22,6 +22,20 @@
         </div>
     </div>
 
+    <!-- Empty Commissions Banner if total_commissions == 0 -->
+    {% if total_commissions == 0 %}
+        <div class="frosted-glass p-5 text-center mb-4 animate-fade-in">
+            <div class="mx-auto mb-3 bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                <i class="bi bi-briefcase-fill display-5"></i>
+            </div>
+            <h3 class="fw-bold text-light mb-2">Your commission pipeline is clear 🎉</h3>
+            <p class="text-secondary max-w-md mx-auto mb-4">Ready for new projects? Add custom client requests manually or share your commission intake link.</p>
+            <button type="button" class="btn btn-gradient px-4 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#createCommissionModal">
+                <i class="bi bi-plus-circle me-1"></i> + Create Commission
+            </button>
+        </div>
+    {% endif %}
+
     <!-- 4 Clean Kanban Pipeline Columns -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4 animate-fade-in">
         {% for stage in pipeline %}
