@@ -572,6 +572,23 @@ a.link-accent:hover {
     box-shadow: 0 4px 16px rgba(6, 182, 212, 0.2);
 }
 
+/* Modern Dropzone Styles */
+.dropzone-box {
+    border: 2px dashed var(--input-border);
+    border-radius: 16px;
+    background: var(--input-bg);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dropzone-box:hover, .dropzone-box.dragover {
+    border-color: var(--accent-cyan);
+    background: rgba(6, 182, 212, 0.08);
+    transform: scale(1.01);
+}
+
 /* Responsive Hide Sidebar */
 @media (max-width: 991.98px) {
     .sidebar-navigation {

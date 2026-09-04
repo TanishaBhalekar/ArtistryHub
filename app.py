@@ -44,6 +44,11 @@ def create_app(config_class=Config):
         analytics = get_user_analytics(current_user.id)
         return render_template('dashboard/index.html', artworks=artworks, analytics=analytics)
 
+    @app.route('/ai-studio')
+    @login_required
+    def ai_studio():
+        return redirect(url_for('ai.hub'))
+
     @app.route('/profile', methods=['GET', 'POST'])
     @login_required
     def profile():

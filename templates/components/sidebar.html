@@ -38,6 +38,15 @@
                 <div class="sidebar-section-header px-3 mb-2">CREATIVE & AI SUITE</div>
                 <ul class="sidebar-nav-list">
                     <li class="sidebar-nav-item">
+                        <a href="{{ url_for('ai.hub') }}" class="sidebar-nav-link {% if request.endpoint == 'ai.hub' %}active{% endif %}">
+                            <i class="bi bi-cpu-fill text-accent"></i>
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                <span>AI Studio Hub</span>
+                                <span class="badge bg-purple-subtle text-info extra-small">Suite</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
                         <a href="{{ url_for('ai.style_explorer') }}" class="sidebar-nav-link {% if request.endpoint == 'ai.style_explorer' %}active{% endif %}">
                             <i class="bi bi-journal-album text-warning"></i>
                             <div class="d-flex justify-content-between align-items-center w-100">

@@ -18,6 +18,16 @@ from services.image_processing import allowed_file
 ai = Blueprint('ai', __name__, url_prefix='/ai')
 
 # ----------------------------------------------------
+# 0. AI Studio Hub Landing View (/ai-studio or /ai/studio)
+# ----------------------------------------------------
+@ai.route('/studio', methods=['GET'])
+@ai.route('/hub', methods=['GET'])
+@login_required
+def hub():
+    """Render the unified AI Studio Hub landing view."""
+    return render_template('ai/hub.html')
+
+# ----------------------------------------------------
 # 1. Palette Lab Tool
 # ----------------------------------------------------
 @ai.route('/palette-lab', methods=['GET'])

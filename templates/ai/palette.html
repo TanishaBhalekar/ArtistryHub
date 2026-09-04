@@ -7,12 +7,18 @@
     <!-- Header -->
     <div class="frosted-glass p-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
         <div>
+            <div class="mb-1">
+                <a href="{{ url_for('ai.hub') }}" class="text-accent text-decoration-none extra-small fw-bold">
+                    &larr; AI Studio
+                </a>
+                <span class="text-secondary extra-small">/ Palette Lab</span>
+            </div>
             <h2 class="fw-bold mb-1"><i class="bi bi-palette text-accent me-2"></i>Palette <span class="text-gradient">Lab</span></h2>
             <p class="text-secondary mb-0 small">Extract 5 dominant HEX color profiles from portfolio assets using OpenCV and Scikit-Learn KMeans clustering.</p>
         </div>
         <div>
-            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            <a href="{{ url_for('ai.hub') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to AI Studio
             </a>
         </div>
     </div>
