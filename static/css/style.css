@@ -615,6 +615,10 @@ a.link-accent:hover {
     padding: 1.1rem 1.4rem;
 }
 
+.text-light-blue {
+    color: #38BDF8 !important;
+}
+
 /* Responsive Hide Sidebar */
 @media (max-width: 991.98px) {
     .sidebar-navigation {
