@@ -1,37 +1,378 @@
 {% extends "base.html" %}
 
-{% block title %}Welcome - ArtistryHub{% endblock %}
+{% block title %}ArtistryHub - Discovery & Curated Fine Art Exhibition{% endblock %}
 
 {% block content %}
-<div class="container text-center my-auto py-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8">
-            <div class="frosted-glass p-5">
-                <span class="badge bg-purple-subtle text-info mb-3 px-3 py-2 border border-info-subtle rounded-pill">
-                    <i class="bi bi-palette me-1"></i> ArtistryHub Platform
-                </span>
-                <h1 class="display-4 fw-bold mb-3">
-                    Empowering Artists with <span class="text-gradient">Vision & Intelligence</span>
+<div class="py-3">
+
+    <!-- 1. Category Filter Pill Bar -->
+    <div class="frosted-glass p-2 mb-4 d-flex align-items-center gap-2 overflow-x-auto no-scrollbar" id="categoryFilterBar">
+        <button class="filter-pill active" onclick="filterCategory('All')">All Works</button>
+        <button class="filter-pill" onclick="filterCategory('Concept Art')">Concept Art</button>
+        <button class="filter-pill" onclick="filterCategory('Digital 2D')">Digital 2D</button>
+        <button class="filter-pill" onclick="filterCategory('3D Render')">3D Render</button>
+        <button class="filter-pill" onclick="filterCategory('Traditional Oil')">Traditional Oil</button>
+        <button class="filter-pill" onclick="filterCategory('Character Design')">Character Design</button>
+        <button class="filter-pill" onclick="filterCategory('Landscape')">Landscape</button>
+        <button class="filter-pill" onclick="filterCategory('Surrealism')">Surrealism</button>
+    </div>
+
+    <!-- 2. Curated Spotlight Hero Section -->
+    <section class="position-relative rounded-4 overflow-hidden mb-5 border border-secondary shadow-lg group" style="min-height: 520px; background-color: var(--card-surface);">
+        <!-- Background Artwork Image -->
+        <div class="position-absolute top-0 start-0 w-100 h-100 overflow-hidden" style="z-index: 0;">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYCTNI-6h_vccteqzr4KAnCTtv9Xsk6Je6vhs10zr1OUxasDNJKodtVn9PQmbxApS0x2SkCRGqXKbr2Hl7vuOdis_zcvj94INOTZdMPw_8KXWvSWiFi01f1EpJzoMWGa5uB-otZhRcdjRkG1Oi-Ft8sfvjCsFj1ZJ48fb_oEjD6PLyo6kS03tbAHzc18Ga1tvP9_xTaHgOL24NU7yslWpfSLepCflWb1L00sefETYkZF4HA-i9-KaRZ_Io3k7KtNn5fDd9iGtxMurO" 
+                 alt="Varanasi: City of Sacred Light" 
+                 class="w-100 h-100 object-fit-cover transition-transform" 
+                 style="transform: scale(1.02); filter: brightness(0.85);" 
+                 id="spotlightHeroImg">
+            <!-- Vignette Scrim Gradient for Dual-Theme Readability -->
+            <div class="position-absolute top-0 start-0 w-100 h-100" 
+                 style="background: linear-gradient(to top, var(--bg-theme) 0%, rgba(14, 15, 18, 0.65) 55%, transparent 100%);"></div>
+        </div>
+
+        <!-- Spotlight Content Overlay -->
+        <div class="position-relative p-4 p-md-5 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-end gap-4 h-100" style="z-index: 10; min-height: 520px;">
+            <div class="max-w-2xl text-light">
+                <!-- Badges & Tags -->
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="badge px-2.5 py-1 text-uppercase" style="background: rgba(229, 169, 60, 0.2); color: var(--accent-amber); border: 1px solid rgba(229, 169, 60, 0.4);">
+                        <i class="bi bi-stars me-1"></i> Spotlight Masterpiece
+                    </span>
+                    <span class="tag-pill">#heritage</span>
+                    <span class="tag-pill">#concept-art</span>
+                    <span class="tag-pill">#digital-matte</span>
+                </div>
+
+                <!-- Title in Playfair Display -->
+                <h1 class="display-5 fw-bold text-white mb-2 font-serif">
+                    Varanasi: City of Sacred Light
                 </h1>
-                <p class="lead text-secondary mb-4">
-                    Showcase portfolios, manage client commissions, and apply automated OpenCV image filters in one seamless hub.
+
+                <!-- Curatorial Blurb -->
+                <p class="lead small text-light opacity-90 mb-4" style="max-width: 620px;">
+                    A transcendent exploration of ancient architecture meeting ethereal luminescence. Vikram Adiga's concept art captures the soul of the sacred river with unprecedented atmospheric depth.
                 </p>
-                <div class="d-flex flex-wrap justify-content-center gap-3">
+
+                <!-- Artist Metadata Byline -->
+                <div class="d-flex align-items-center gap-3">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAb28DVOfNfmlxxsjjobn9ORPMNv2KiNlQE_ND2GsFeV4zYd5sUpR07ZBaFgE1E_VKYRqIBaJW4hFkT-LpA8SMhB-M0sOHasVat7THjp-51DbyvBXumQtYEB4sU2LFKfpXQ_2IPwF2osBkZhsqqwXGcPGMm99Revc1Alnnd5RQReVb5oC1x04gm4NfmbIzPb0sceRK6Un_fPVPNFovEWOtCA2qtkrCC9E1RCVCbeftM5bhJVjICi7QeQI6JflcCU6THH2F8-siCs2O1" 
+                         alt="Vikram Adiga" 
+                         class="rounded-circle border border-white border-opacity-25" 
+                         style="width: 46px; height: 46px; object-fit: cover;">
+                    <div>
+                        <div class="fw-semibold text-white">Vikram Adiga</div>
+                        <div class="extra-small text-light opacity-75">Master Concept Artist &bull; Verified Exhibitor</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Reservation Card (Strict INR Contract) -->
+            <div class="frosted-glass p-4 rounded-3 border border-secondary shadow-lg d-flex flex-column align-items-start align-items-md-end shrink-0" style="min-width: 280px;">
+                <span class="extra-small text-uppercase fw-bold text-secondary mb-1">Original Valuation</span>
+                <div class="currency-inr fs-3 text-warning mb-3" style="color: var(--accent-amber) !important;">
+                    ₹ 85,000 INR
+                </div>
+                
+                <div class="d-flex flex-column flex-sm-row gap-2 w-100">
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('dashboard') }}" class="btn btn-gradient btn-lg px-4 fs-6">
-                            Go to Dashboard <i class="bi bi-arrow-right ms-1"></i>
+                        <a href="{{ url_for('commissions.index') }}" class="btn btn-gradient btn-sm px-3 py-2 fw-semibold w-100 text-center">
+                            Inquire & Commission
                         </a>
                     {% else %}
-                        <a href="{{ url_for('auth.register') }}" class="btn btn-gradient btn-lg px-4 fs-6">
-                            Create Free Account <i class="bi bi-person-plus ms-1"></i>
-                        </a>
-                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg px-4 fs-6">
-                            Sign In
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-gradient btn-sm px-3 py-2 fw-semibold w-100 text-center">
+                            Inquire & Commission
                         </a>
                     {% endif %}
+                    <button type="button" class="btn btn-glass btn-sm px-3 py-2 fw-semibold text-nowrap" onclick="openFullResModal('Varanasi: City of Sacred Light', 'https://lh3.googleusercontent.com/aida-public/AB6AXuAYCTNI-6h_vccteqzr4KAnCTtv9Xsk6Je6vhs10zr1OUxasDNJKodtVn9PQmbxApS0x2SkCRGqXKbr2Hl7vuOdis_zcvj94INOTZdMPw_8KXWvSWiFi01f1EpJzoMWGa5uB-otZhRcdjRkG1Oi-Ft8sfvjCsFj1ZJ48fb_oEjD6PLyo6kS03tbAHzc18Ga1tvP9_xTaHgOL24NU7yslWpfSLepCflWb1L00sefETYkZF4HA-i9-KaRZ_Io3k7KtNn5fDd9iGtxMurO', 'Vikram Adiga', '₹ 85,000 INR', 'Concept Art')">
+                        <i class="bi bi-arrows-fullscreen me-1"></i> Full Resolution
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Curated Discoveries Grid Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 pt-2 border-bottom border-secondary-subtle pb-3">
+        <div>
+            <h2 class="font-serif fw-bold mb-1">Curated Discoveries</h2>
+            <p class="text-secondary mb-0 small">Explore authentic masterworks across traditional painting, digital craft, and 3D modeling.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-pill small" id="activeArtCount">
+                6 Artworks Available
+            </span>
+        </div>
+    </div>
+
+    <!-- 4. Pinterest-Style Masonry Discovery Grid -->
+    <div class="masonry-gallery" id="discoveryMasonry">
+        
+        <!-- Artwork 1: Cyberpunk District 9 -->
+        <div class="masonry-item interactive-card" data-category="Digital 2D" data-title="Cyberpunk District 9" data-artist="Sarah Jenkins">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbpJg1FvdU16_7Ik-P4lUE86y3VL0qvk5uq2psBH1OXB2Zk8x-bo-SICsWkpZHDk9O25CoYv1wboYUGG6N9ltiljompwYDIwbVs8DnVKP5-u6PZEHOS2Ebhx76DHd5CHE4NWiFN0pxKzlJnqbefo2g95sNilRV7VeSRFjZw4ptkLrz8OxqpmxmuPASa6tRzEjgYAMhKsYNwUaQiD3gcDJVwzbmLcnEr0a-m-NGUSp1jOpk41i5oG57Mcmtgq-0gjkVcv4W3aSvzBa3" 
+                 alt="Cyberpunk District 9" 
+                 class="masonry-img">
+            <div class="masonry-overlay">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1 extra-small">Digital 2D</span>
+                    <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleCardLike(this, 385)">
+                        <i class="bi bi-heart-fill"></i>
+                    </button>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-white mb-1 font-serif">Cyberpunk District 9</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-secondary">Sarah Jenkins</small>
+                        <span class="currency-inr text-warning">₹ 18,500</span>
+                    </div>
+                    <div class="d-flex gap-1 mb-2">
+                        <span class="extra-small text-secondary">#neon</span>
+                        <span class="extra-small text-secondary">#cyberpunk</span>
+                    </div>
+                    <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openFullResModal('Cyberpunk District 9', this.closest('.masonry-item').querySelector('img').src, 'Sarah Jenkins', '₹ 18,500 INR', 'Digital 2D')">
+                        <i class="bi bi-eye me-1"></i> Quick Preview
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Artwork 2: Celestial Sitarist -->
+        <div class="masonry-item interactive-card" data-category="3D Render" data-title="Celestial Sitarist" data-artist="Rohan Mehra">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi-GSoBckvIxFKiEVT1keyIUcAFlDMNtPl2Ui1NEc00Tnn_tIAqtFIusw3h2sGj_WRy3pdWfPHchXbSc3gqF1CtSZ_PicYk9M-7KcuTZR4nMLqzRZYaVgXmY7c6oE26Sv6ljdxmlLmTpFcQ7fpi3ZYg2FsTo8pTLvQKlKfrfBntncUTScK0QxiqkgJrMR1geuUdH3Jr_g8osOOLpzkDVkDi772o9_gzFQ9HUq6YfVD3ylJB9IYpXAi_oYUsEwd14I08508FzSsDu2D" 
+                 alt="Celestial Sitarist" 
+                 class="masonry-img">
+            <div class="masonry-overlay">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1 extra-small">3D Render</span>
+                    <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleCardLike(this, 512)">
+                        <i class="bi bi-heart-fill"></i>
+                    </button>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-white mb-1 font-serif">Celestial Sitarist</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-secondary">Rohan Mehra</small>
+                        <span class="currency-inr text-warning">₹ 42,000</span>
+                    </div>
+                    <div class="d-flex gap-1 mb-2">
+                        <span class="extra-small text-secondary">#surreal</span>
+                        <span class="extra-small text-secondary">#3d</span>
+                    </div>
+                    <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openFullResModal('Celestial Sitarist', this.closest('.masonry-item').querySelector('img').src, 'Rohan Mehra', '₹ 42,000 INR', '3D Render')">
+                        <i class="bi bi-eye me-1"></i> Quick Preview
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Artwork 3: Monsoon over Western Ghats -->
+        <div class="masonry-item interactive-card" data-category="Landscape" data-title="Monsoon over Western Ghats" data-artist="Priya Nair">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr-AHkDWR_JQvwEyy0452iGoBpUmfJqaYOpSLjn84vz1-BVWXdn89NRY7BBNMVlPyZ_1VSjJFw1_gIL9JAalGOqae9Vb_MhcQLCfZnE5dueAgiAW2tag6sokEeJJUq_J3XIvfrvYyOZLhztyhMutcyfGY7UuJ0OWPu9wQwbZYm_dYLWZUfv5C18MBWJm14QHSrtdlmb61wZ-bU8eqrMrF5ffM-7yjGloY9rEeJ2Rrl1lj0FRYVG2N860fW2WCLCddkx270Me2U8iSf" 
+                 alt="Monsoon over Western Ghats" 
+                 class="masonry-img">
+            <div class="masonry-overlay">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1 extra-small">Landscape</span>
+                    <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleCardLike(this, 240)">
+                        <i class="bi bi-heart-fill"></i>
+                    </button>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-white mb-1 font-serif">Monsoon over Western Ghats</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-secondary">Priya Nair</small>
+                        <span class="currency-inr text-warning">₹ 12,000</span>
+                    </div>
+                    <div class="d-flex gap-1 mb-2">
+                        <span class="extra-small text-secondary">#landscape</span>
+                        <span class="extra-small text-secondary">#environment</span>
+                    </div>
+                    <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openFullResModal('Monsoon over Western Ghats', this.closest('.masonry-item').querySelector('img').src, 'Priya Nair', '₹ 12,000 INR', 'Landscape')">
+                        <i class="bi bi-eye me-1"></i> Quick Preview
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Artwork 4: Mecha Garuda Awakening -->
+        <div class="masonry-item interactive-card" data-category="Concept Art" data-title="Mecha Garuda Awakening" data-artist="K. Sengupta">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPPx7WQerd66GpvJpbWFG7hG4mwpmoJhXsyyFXfV4R1nGprVfvDwzgHTOam6ItJI6REC76vuQvxIVnjuJuZZyzS-fwaL2GDAzojaCvhmK2nFsfnCYbeKuI1T9I3s9cuyCe8794DniXtpwgL_F0NWTiM5xR1boblsWG4bwPjQrBf9JR60-leT4LyA5ompAD5QcvmF5lwO2qKzGA53K5fk528_eytm0gTfMUpo_bBaHQSHbGF3P_aCq1JzVsr6vD8wLrSMOuphNkhTV4" 
+                 alt="Mecha Garuda Awakening" 
+                 class="masonry-img">
+            <div class="masonry-overlay">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1 extra-small">Concept Art</span>
+                    <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleCardLike(this, 890)">
+                        <i class="bi bi-heart-fill"></i>
+                    </button>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-white mb-1 font-serif">Mecha Garuda Awakening</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-secondary">K. Sengupta</small>
+                        <span class="currency-inr text-warning">₹ 65,000</span>
+                    </div>
+                    <div class="d-flex gap-1 mb-2">
+                        <span class="extra-small text-secondary">#mythology</span>
+                        <span class="extra-small text-secondary">#scifi</span>
+                    </div>
+                    <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openFullResModal('Mecha Garuda Awakening', this.closest('.masonry-item').querySelector('img').src, 'K. Sengupta', '₹ 65,000 INR', 'Concept Art')">
+                        <i class="bi bi-eye me-1"></i> Quick Preview
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Artwork 5: Prism Fluid Dynamic -->
+        <div class="masonry-item interactive-card" data-category="3D Render" data-title="Prism Fluid Dynamic" data-artist="Studio K">
+            <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=600&q=80" 
+                 alt="Prism Fluid Dynamic" 
+                 class="masonry-img">
+            <div class="masonry-overlay">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1 extra-small">3D Render</span>
+                    <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleCardLike(this, 310)">
+                        <i class="bi bi-heart-fill"></i>
+                    </button>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-white mb-1 font-serif">Prism Fluid Dynamic</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-secondary">Studio K</small>
+                        <span class="currency-inr text-warning">₹ 24,000</span>
+                    </div>
+                    <div class="d-flex gap-1 mb-2">
+                        <span class="extra-small text-secondary">#abstract</span>
+                        <span class="extra-small text-secondary">#geometry</span>
+                    </div>
+                    <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openFullResModal('Prism Fluid Dynamic', this.closest('.masonry-item').querySelector('img').src, 'Studio K', '₹ 24,000 INR', '3D Render')">
+                        <i class="bi bi-eye me-1"></i> Quick Preview
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Artwork 6: The Weaver's Solitude -->
+        <div class="masonry-item interactive-card" data-category="Traditional Oil" data-title="The Weaver's Solitude" data-artist="Ananya Das">
+            <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=600&q=80" 
+                 alt="The Weaver's Solitude" 
+                 class="masonry-img">
+            <div class="masonry-overlay">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1 extra-small">Traditional</span>
+                    <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleCardLike(this, 430)">
+                        <i class="bi bi-heart-fill"></i>
+                    </button>
+                </div>
+                <div>
+                    <h5 class="fw-bold text-white mb-1 font-serif">The Weaver's Solitude</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-secondary">Ananya Das</small>
+                        <span class="currency-inr text-warning">₹ 35,000</span>
+                    </div>
+                    <div class="d-flex gap-1 mb-2">
+                        <span class="extra-small text-secondary">#portrait</span>
+                        <span class="extra-small text-secondary">#realism</span>
+                    </div>
+                    <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openFullResModal('The Weaver\'s Solitude', this.closest('.masonry-item').querySelector('img').src, 'Ananya Das', '₹ 35,000 INR', 'Traditional Oil')">
+                        <i class="bi bi-eye me-1"></i> Quick Preview
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 5. Open Artist Studio CTA Banner -->
+    <section class="frosted-glass p-4 p-md-5 rounded-4 mt-5 d-flex flex-column flex-md-row justify-content-between align-items-center gap-4 border border-secondary">
+        <div class="max-w-xl">
+            <h3 class="font-serif fw-bold mb-2">Are you an artist or concept creator?</h3>
+            <p class="text-secondary mb-0">Join ArtistryHub to showcase your portfolio in a museum-grade environment, manage client commissions with INR payouts, and automate OpenCV image filters.</p>
+        </div>
+        <div>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-gradient btn-lg px-4 py-2.5 fw-semibold text-nowrap">
+                    <i class="bi bi-palette-fill me-1"></i> Open Artist Studio
+                </a>
+            {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-gradient btn-lg px-4 py-2.5 fw-semibold text-nowrap">
+                    <i class="bi bi-person-plus-fill me-1"></i> Join Creator Studio
+                </a>
+            {% endif %}
+        </div>
+    </section>
+
+</div>
+
+<!-- Full Resolution Preview Modal -->
+<div class="modal fade" id="fullResPreviewModal" tabindex="-1" aria-labelledby="fullResModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content frosted-glass border-secondary p-3">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title font-serif fw-bold" id="fullResModalTitle">Artwork Preview</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-3">
+                <img id="fullResModalImg" src="" alt="Preview" class="img-fluid rounded border border-secondary shadow mb-3" style="max-height: 520px; object-fit: contain;">
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary-subtle">
+                    <div class="text-start">
+                        <span class="badge bg-secondary-subtle text-info extra-small" id="fullResModalMedium">Digital</span>
+                        <div class="extra-small text-secondary mt-1">Artist: <strong id="fullResModalArtist" class="text-light">Artist</strong></div>
+                    </div>
+                    <div>
+                        <span class="currency-inr fs-4 text-warning" id="fullResModalPrice">₹ 0 INR</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+// Category Filtering
+function filterCategory(category) {
+    const pills = document.querySelectorAll('#categoryFilterBar .filter-pill');
+    pills.forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+
+    const items = document.querySelectorAll('#discoveryMasonry .masonry-item');
+    let visibleCount = 0;
+
+    items.forEach(item => {
+        const itemCategory = item.getAttribute('data-category');
+        if (category === 'All' || itemCategory.toLowerCase().includes(category.toLowerCase())) {
+            item.style.display = 'block';
+            visibleCount++;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+
+    document.getElementById('activeArtCount').textContent = visibleCount + ' Artworks Available';
+}
+
+// Like Button Interactive Counter
+function toggleCardLike(btn, defaultCount) {
+    btn.classList.toggle('liked');
+    const isLiked = btn.classList.contains('liked');
+    if (isLiked) {
+        btn.style.color = '#EC4899';
+    } else {
+        btn.style.color = '';
+    }
+}
+
+// Open Full Resolution Modal
+function openFullResModal(title, imgSrc, artist, price, medium) {
+    document.getElementById('fullResModalTitle').textContent = title;
+    document.getElementById('fullResModalImg').src = imgSrc;
+    document.getElementById('fullResModalArtist').textContent = artist;
+    document.getElementById('fullResModalPrice').textContent = price;
+    document.getElementById('fullResModalMedium').textContent = medium;
+
+    const modal = new bootstrap.Modal(document.getElementById('fullResPreviewModal'));
+    modal.show();
+}
+</script>
 {% endblock %}
