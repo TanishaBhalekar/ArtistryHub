@@ -1,123 +1,281 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - ArtistryHub{% endblock %}
+{% block title %}Artist Workflow Dashboard - ArtistryHub{% endblock %}
 
 {% block content %}
 <div class="container-fluid p-0">
-    <!-- Dashboard Header -->
-    <div class="frosted-glass p-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
-        <div>
-            <h2 class="fw-bold mb-1">Creator <span class="text-gradient">Dashboard</span></h2>
-            <p class="text-secondary mb-0 small">Overview of your portfolio analytics, active client commissions, and AI Studio assets.</p>
-        </div>
-        <div class="d-flex gap-2">
-            <a href="{{ url_for('portfolio.upload') }}" class="btn btn-gradient px-3 fw-semibold">
-                <i class="bi bi-plus-lg me-1"></i> Upload Asset
-            </a>
+    
+    <!-- 1. Hero / Header Greeting -->
+    <div class="hero-greeting-card frosted-glass p-4 mb-4 animate-fade-in">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+                <h2 class="fw-bold mb-2">Good morning, {{ current_user.name }} 👋</h2>
+                <p class="text-secondary mb-0 small">Here is your daily creative workflow summary and active client priorities.</p>
+            </div>
+            <!-- Contextual Summary Pill Badges -->
+            <div class="d-flex flex-wrap gap-2">
+                <span class="summary-pill bg-dark text-light border-secondary">
+                    <i class="bi bi-briefcase-fill text-info"></i> {{ analytics.active_commissions }} Active Commissions
+                </span>
+                <span class="summary-pill bg-danger-subtle text-danger border-danger-subtle">
+                    <span>🔴</span> {{ analytics.need_revision_count }} Need Revision
+                </span>
+                <span class="summary-pill bg-warning-subtle text-warning border-warning-subtle">
+                    <span>🟡</span> {{ analytics.awaiting_feedback_count }} Awaiting Client Feedback
+                </span>
+                <span class="summary-pill bg-success-subtle text-success border-success-subtle">
+                    <span>🟢</span> {{ analytics.ready_delivery_count }} Ready for Delivery
+                </span>
+            </div>
         </div>
     </div>
 
-        <!-- Cross-Database Aggregates Analytics Cards with Pure CSS Progress Rings -->
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mb-4 animate-fade-in">
-            <!-- 1. Total Uploads Card -->
-            <div class="col">
-                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between interactive-card">
-                    <div>
-                        <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Total Uploads</small>
-                        <h3 class="fw-bold text-light mb-0 mt-1">{{ analytics.total_uploads }}</h3>
-                        <span class="badge bg-purple-subtle text-info mt-2 extra-small"><i class="bi bi-images me-1"></i> Gallery Assets</span>
+    <!-- 2. Quick Actions Row -->
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-4 animate-fade-in">
+        <a href="{{ url_for('commissions.index') }}" class="btn btn-gradient px-3 py-2 fw-semibold">
+            <i class="bi bi-plus-circle me-1"></i> + New Commission Request
+        </a>
+        <a href="{{ url_for('portfolio.upload') }}" class="btn btn-glass px-3 py-2 fw-semibold">
+            <i class="bi bi-cloud-arrow-up me-1"></i> + Upload Artwork
+        </a>
+        <a href="{{ url_for('ai.palette_lab') }}" class="btn btn-glass px-3 py-2 fw-semibold">
+            <i class="bi bi-palette me-1"></i> Launch Palette Lab
+        </a>
+    </div>
+
+    <!-- Main Grid: Left Column (Workflow Tasks & Pipeline) + Right Rail (Quick Stats) -->
+    <div class="row g-4 mb-4">
+        <!-- Left Main Column (8 cols) -->
+        <div class="col-12 col-lg-8">
+            
+            <!-- 3. "Today's Focus / Action Required" Card (Top Priority) -->
+            <div class="frosted-glass p-4 mb-4 animate-fade-in">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="bi bi-check2-square text-accent me-2"></i>Today's Focus / Action Required
+                    </h5>
+                    <span class="badge bg-purple-subtle text-info">3 Priority Tasks</span>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    <!-- Action Task Item 1 -->
+                    <div class="action-task-card d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="p-2 rounded-circle bg-danger-subtle text-danger">
+                                <i class="bi bi-exclamation-circle-fill fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-light mb-1">Review "Portrait Commission" Revision</h6>
+                                <div class="text-secondary extra-small">
+                                    <i class="bi bi-clock me-1 text-danger"></i> Deadline: <strong class="text-danger">Tomorrow</strong> &bull; Client: Sarah Jenkins
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('commissions.index') }}" class="btn btn-gradient btn-sm px-3 fw-semibold">
+                            Open <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
                     </div>
-                    <!-- Pure CSS Progress Ring -->
-                    <div class="progress-ring-wrapper">
-                        <svg class="progress-ring-svg">
-                            <circle class="progress-ring-bg" cx="32" cy="32" r="24"></circle>
-                            <circle class="progress-ring-fill" cx="32" cy="32" r="24" stroke="var(--accent-cyan)" stroke-dasharray="150" stroke-dashoffset="35"></circle>
-                        </svg>
-                        <span class="progress-ring-text text-cyan">{{ analytics.total_uploads }}</span>
+
+                    <!-- Action Task Item 2 -->
+                    <div class="action-task-card d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="p-2 rounded-circle bg-warning-subtle text-warning">
+                                <i class="bi bi-pencil-fill fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-light mb-1">Send sketch update to "Cyberpunk Character"</h6>
+                                <div class="text-secondary extra-small">
+                                    <i class="bi bi-calendar-event me-1"></i> Stage: <strong>Sketch Phase</strong> &bull; Client: Marcus Vance
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('commissions.index') }}" class="btn btn-glass btn-sm px-3 fw-semibold">
+                            Upload Update <i class="bi bi-cloud-upload ms-1"></i>
+                        </a>
+                    </div>
+
+                    <!-- Action Task Item 3 -->
+                    <div class="action-task-card d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="p-2 rounded-circle bg-success-subtle text-success">
+                                <i class="bi bi-box-seam-fill fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-light mb-1">Deliver finalized "Logo Illustration"</h6>
+                                <div class="text-secondary extra-small">
+                                    <i class="bi bi-currency-dollar me-1 text-success"></i> Final Payout: <strong>$450.00</strong> &bull; Client: Studio K
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('commissions.index') }}" class="btn btn-outline-success btn-sm px-3 fw-semibold">
+                            Deliver & Invoice <i class="bi bi-check2-circle ms-1"></i>
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. Active Commissions Card -->
-            <div class="col">
-                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between interactive-card">
-                    <div>
-                        <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Active Commissions</small>
-                        <h3 class="fw-bold text-warning mb-0 mt-1">{{ analytics.active_commissions }}</h3>
-                        <span class="badge bg-warning-subtle text-warning mt-2 extra-small"><i class="bi bi-clock-history me-1"></i> {{ analytics.total_commissions }} Total Orders</span>
+            <!-- 4. Active Pipeline Snapshot (Kanban Mini-Strip) -->
+            <div class="frosted-glass p-4 mb-4 animate-fade-in">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="bi bi-kanban text-info me-2"></i>Active Pipeline Snapshot
+                    </h5>
+                    <a href="{{ url_for('commissions.index') }}" class="text-accent extra-small text-decoration-none fw-semibold">
+                        View Kanban Board <i class="bi bi-arrow-right me-1"></i>
+                    </a>
+                </div>
+
+                <!-- Kanban Mini-Strip Row -->
+                <div class="row row-cols-2 row-cols-md-4 g-3">
+                    <!-- Stage 1: Requested -->
+                    <div class="col">
+                        <a href="{{ url_for('commissions.index') }}" class="text-decoration-none">
+                            <div class="pipeline-mini-step interactive-card">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="badge bg-warning-subtle text-warning extra-small">Requested</span>
+                                    <span class="fw-bold text-warning fs-5">{{ analytics.stage_counts.get('Requested', 1) }}</span>
+                                </div>
+                                <div class="text-secondary extra-small">New client orders awaiting acceptance</div>
+                            </div>
+                        </a>
                     </div>
-                    <div class="progress-ring-wrapper">
-                        <svg class="progress-ring-svg">
-                            <circle class="progress-ring-bg" cx="32" cy="32" r="24"></circle>
-                            <circle class="progress-ring-fill" cx="32" cy="32" r="24" stroke="#F59E0B" stroke-dasharray="150" stroke-dashoffset="{{ 150 - (analytics.completion_rate * 1.5) }}"></circle>
-                        </svg>
-                        <span class="progress-ring-text text-warning">{{ analytics.active_commissions }}</span>
+
+                    <!-- Stage 2: In Progress -->
+                    <div class="col">
+                        <a href="{{ url_for('commissions.index') }}" class="text-decoration-none">
+                            <div class="pipeline-mini-step active-stage interactive-card">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="badge bg-primary-subtle text-info extra-small">In Progress</span>
+                                    <span class="fw-bold text-info fs-5">{{ analytics.stage_counts.get('Accepted', 1) + analytics.stage_counts.get('Sketch', 0) }}</span>
+                                </div>
+                                <div class="text-secondary extra-small">Sketching & coloring phases</div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Stage 3: Revision -->
+                    <div class="col">
+                        <a href="{{ url_for('commissions.index') }}" class="text-decoration-none">
+                            <div class="pipeline-mini-step interactive-card">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="badge bg-danger-subtle text-danger extra-small">Revision</span>
+                                    <span class="fw-bold text-danger fs-5">{{ analytics.need_revision_count }}</span>
+                                </div>
+                                <div class="text-secondary extra-small">Active client feedback iterations</div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Stage 4: Delivered -->
+                    <div class="col">
+                        <a href="{{ url_for('commissions.index') }}" class="text-decoration-none">
+                            <div class="pipeline-mini-step interactive-card">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="badge bg-success-subtle text-success extra-small">Delivered</span>
+                                    <span class="fw-bold text-success fs-5">{{ analytics.stage_counts.get('Delivered', 1) }}</span>
+                                </div>
+                                <div class="text-secondary extra-small">Completed & invoiced orders</div>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. Projected Revenue Card -->
-            <div class="col">
-                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between interactive-card">
-                    <div>
-                        <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Projected Revenue</small>
-                        <h3 class="fw-bold text-success mb-0 mt-1">${{ "%.2f"|format(analytics.projected_revenue) }}</h3>
-                        <span class="badge bg-success-subtle text-success mt-2 extra-small"><i class="bi bi-graph-up-arrow me-1"></i> Pipeline Value</span>
+        </div>
+
+        <!-- Right Sidebar Rail (4 cols) -->
+        <div class="col-12 col-lg-4">
+            
+            <!-- 5. Quick Stats Sidebar Widget -->
+            <div class="frosted-glass p-4 mb-4 animate-fade-in">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-graph-up-arrow text-success me-2"></i>Quick Stats
+                </h5>
+
+                <div class="d-flex flex-column gap-3">
+                    <!-- Earnings Card -->
+                    <div class="p-3 rounded bg-dark border border-secondary d-flex align-items-center justify-content-between">
+                        <div>
+                            <small class="text-secondary extra-small fw-semibold text-uppercase">Pending Payouts</small>
+                            <h4 class="fw-bold text-success mb-0 mt-1">${{ "%.2f"|format(analytics.pending_payouts) }}</h4>
+                            <small class="text-muted extra-small">${{ "%.2f"|format(analytics.projected_revenue) }} Total Pipeline Value</small>
+                        </div>
+                        <div class="p-3 rounded-circle bg-success-subtle text-success">
+                            <i class="bi bi-cash-stack fs-4"></i>
+                        </div>
                     </div>
-                    <div class="progress-ring-wrapper">
-                        <svg class="progress-ring-svg">
-                            <circle class="progress-ring-bg" cx="32" cy="32" r="24"></circle>
-                            <circle class="progress-ring-fill" cx="32" cy="32" r="24" stroke="#10B981" stroke-dasharray="150" stroke-dashoffset="25"></circle>
-                        </svg>
-                        <span class="progress-ring-text text-success">$</span>
+
+                    <!-- Views & Likes Card -->
+                    <div class="p-3 rounded bg-dark border border-secondary d-flex align-items-center justify-content-between">
+                        <div>
+                            <small class="text-secondary extra-small fw-semibold text-uppercase">Portfolio Engagement</small>
+                            <div class="d-flex align-items-center gap-3 mt-1">
+                                <span class="fw-bold text-light"><i class="bi bi-eye text-info me-1"></i> {{ analytics.portfolio_views }}</span>
+                                <span class="fw-bold text-light"><i class="bi bi-heart-fill text-danger me-1"></i> {{ analytics.portfolio_likes }}</span>
+                            </div>
+                            <small class="text-muted extra-small">Recent portfolio visits & likes</small>
+                        </div>
+                        <div class="p-3 rounded-circle bg-purple-subtle text-info">
+                            <i class="bi bi-heart fs-4"></i>
+                        </div>
+                    </div>
+
+                    <!-- AI Studio Credits Card -->
+                    <div class="p-3 rounded bg-dark border border-secondary d-flex align-items-center justify-content-between">
+                        <div>
+                            <small class="text-secondary extra-small fw-semibold text-uppercase">AI Studio Usage</small>
+                            <h4 class="fw-bold text-cyan mb-0 mt-1" style="color: var(--accent-cyan);">{{ analytics.ai_credits_used }} / {{ analytics.ai_credits_total }}</h4>
+                            <small class="text-muted extra-small">Local Edge Compute (Unlimited)</small>
+                        </div>
+                        <div class="p-3 rounded-circle bg-info-subtle text-cyan">
+                            <i class="bi bi-cpu fs-4"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. Total AI Studio Uses Card -->
-            <div class="col">
-                <div class="frosted-glass p-3 h-100 d-flex align-items-center justify-content-between interactive-card">
-                    <div>
-                        <small class="text-secondary extra-small fw-semibold text-uppercase tracking-wider">Total AI Studio Uses</small>
-                        <h3 class="fw-bold text-purple mb-0 mt-1" style="color: var(--accent-purple);">{{ analytics.ai_studio_uses }}</h3>
-                        <span class="badge bg-purple-subtle text-info mt-2 extra-small"><i class="bi bi-magic me-1"></i> OpenCV & AI Tools</span>
-                    </div>
-                    <div class="progress-ring-wrapper">
-                        <svg class="progress-ring-svg">
-                            <circle class="progress-ring-bg" cx="32" cy="32" r="24"></circle>
-                            <circle class="progress-ring-fill" cx="32" cy="32" r="24" stroke="var(--accent-purple)" stroke-dasharray="150" stroke-dashoffset="40"></circle>
-                        </svg>
-                        <span class="progress-ring-text text-purple" style="color: var(--accent-purple);">AI</span>
-                    </div>
+            <!-- AI Studio Quick Launcher Rail -->
+            <div class="frosted-glass p-4 animate-fade-in">
+                <h6 class="fw-bold text-light mb-3"><i class="bi bi-magic text-accent me-2"></i>AI Studio Shortcuts</h6>
+                <div class="d-flex flex-column gap-2">
+                    <a href="{{ url_for('ai.style_explorer') }}" class="btn btn-glass btn-sm text-start d-flex align-items-center justify-content-between py-2">
+                        <span><i class="bi bi-journal-album text-warning me-2"></i> Style Explorer</span>
+                        <i class="bi bi-chevron-right extra-small text-secondary"></i>
+                    </a>
+                    <a href="{{ url_for('ai.palette_lab') }}" class="btn btn-glass btn-sm text-start d-flex align-items-center justify-content-between py-2">
+                        <span><i class="bi bi-palette text-accent me-2"></i> Palette Lab</span>
+                        <i class="bi bi-chevron-right extra-small text-secondary"></i>
+                    </a>
+                    <a href="{{ url_for('ai.composition_guide') }}" class="btn btn-glass btn-sm text-start d-flex align-items-center justify-content-between py-2">
+                        <span><i class="bi bi-bounding-box text-success me-2"></i> Composition Guide</span>
+                        <i class="bi bi-chevron-right extra-small text-secondary"></i>
+                    </a>
+                    <a href="{{ url_for('ai.prompt_forge') }}" class="btn btn-glass btn-sm text-start d-flex align-items-center justify-content-between py-2">
+                        <span><i class="bi bi-cpu text-cyan me-2"></i> Prompt Forge</span>
+                        <i class="bi bi-chevron-right extra-small text-secondary"></i>
+                    </a>
                 </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Recent Portfolio Showcase Header & Grid -->
+    <div class="frosted-glass p-4 mb-4 animate-fade-in">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+            <div>
+                <h5 class="fw-bold mb-1"><i class="bi bi-images text-accent me-2"></i>Recent Portfolio Showcase</h5>
+                <p class="text-secondary mb-0 extra-small">Your latest uploaded artworks and compressed media previews.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('portfolio.index') }}" class="btn btn-glass btn-sm fw-medium">
+                    View Full Gallery <i class="bi bi-arrow-right me-1"></i>
+                </a>
             </div>
         </div>
 
-        <!-- Chart.js Cross-Database Visual Analytics Module -->
-        <div class="row g-3 mb-4 animate-fade-in">
-            <!-- Chart 1: Category Distribution -->
-            <div class="col-12 col-lg-5">
-                <div class="frosted-glass p-4 h-100 interactive-card">
-                    <h6 class="fw-bold text-light mb-3"><i class="bi bi-pie-chart text-info me-2"></i>Portfolio Categories Distribution</h6>
-                    <div style="height: 220px; position: relative;">
-                        <canvas id="categoryChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Chart 2: Commission Stage Breakdown -->
-            <div class="col-12 col-lg-7">
-                <div class="frosted-glass p-4 h-100 interactive-card">
-                    <h6 class="fw-bold text-light mb-3"><i class="bi bi-bar-chart-steps text-accent me-2"></i>Commission Pipeline Stages</h6>
-                    <div style="height: 220px; position: relative;">
-                        <canvas id="pipelineChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Category Filter Pills -->
-        <div class="d-flex flex-wrap gap-2 mb-4">
+        <!-- Filter Pills -->
+        <div class="d-flex flex-wrap gap-2 mb-3">
             <button class="filter-pill active" onclick="filterMasonry('all')">All Assets</button>
             <button class="filter-pill" onclick="filterMasonry('Digital 2D')">Digital 2D</button>
             <button class="filter-pill" onclick="filterMasonry('Concept Art')">Concept Art</button>
@@ -127,7 +285,7 @@
         </div>
 
         <!-- Pinterest-Style Dynamic Masonry Gallery -->
-        <div class="masonry-gallery animate-fade-in" id="masonryGallery">
+        <div class="masonry-gallery" id="masonryGallery">
             {% if artworks %}
                 {% for art in artworks %}
                     <div class="masonry-item interactive-card" data-category="{{ art.category or 'Digital 2D' }}">
@@ -142,18 +300,16 @@
                                 <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1 extra-small">
                                     {{ art.medium or 'Digital' }}
                                 </span>
-                                <!-- Like Utility Button -->
                                 <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleLike(this)">
                                     <i class="bi bi-heart-fill"></i>
                                 </button>
                             </div>
 
                             <div>
-                                <h5 class="fw-bold text-white mb-1 text-truncate">{{ art.title }}</h5>
-                                <p class="text-secondary small mb-3 text-truncate">{{ art.author.name if art.author else current_user.name }}</p>
+                                <h6 class="fw-bold text-white mb-1 text-truncate">{{ art.title }}</h6>
+                                <p class="text-secondary extra-small mb-3 text-truncate">{{ art.author.name if art.author else current_user.name }}</p>
                                 
                                 <div class="d-flex gap-2">
-                                    <!-- Quick Preview Action Anchor -->
                                     <button type="button" 
                                             class="btn btn-glass btn-sm w-100 fw-medium quick-preview-btn" 
                                             onclick="openPreviewModal('{{ art.title }}', '{{ url_for('static', filename='uploads/' + art.image_url) }}', '{{ art.medium or 'Digital 2D' }}', '{{ art.category or 'General' }}', '{{ art.description or 'No description provided.' }}', '{{ art.author.name if art.author else current_user.name }}')">
@@ -165,8 +321,8 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <!-- Demonstration Pinterest Masonry Cards if user hasn't uploaded yet -->
-                <div class="masonry-item" data-category="Concept Art">
+                <!-- Demonstration Portfolio Cards -->
+                <div class="masonry-item interactive-card" data-category="Concept Art">
                     <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="Nebula Fantasy" class="masonry-img">
                     <div class="masonry-overlay">
                         <div class="d-flex justify-content-between align-items-center">
@@ -174,8 +330,8 @@
                             <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
                         </div>
                         <div>
-                            <h5 class="fw-bold text-white mb-1">Nebula Fantasy</h5>
-                            <p class="text-secondary small mb-3">Digital 3D &bull; By ArtistryHub AI</p>
+                            <h6 class="fw-bold text-white mb-1">Nebula Fantasy</h6>
+                            <p class="text-secondary extra-small mb-3">Digital 3D &bull; By ArtistryHub AI</p>
                             <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openPreviewModal('Nebula Fantasy', 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80', 'Digital 3D', 'Concept Art', 'A vivid cosmic nebula created with generative shaders.', 'ArtistryHub AI')">
                                 <i class="bi bi-eye me-1"></i> Quick Preview
                             </button>
@@ -183,7 +339,7 @@
                     </div>
                 </div>
 
-                <div class="masonry-item" data-category="Portrait">
+                <div class="masonry-item interactive-card" data-category="Portrait">
                     <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=600&q=80" alt="Cyberpunk Neon Portrait" class="masonry-img">
                     <div class="masonry-overlay">
                         <div class="d-flex justify-content-between align-items-center">
@@ -191,8 +347,8 @@
                             <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
                         </div>
                         <div>
-                            <h5 class="fw-bold text-white mb-1">Cyberpunk Neon</h5>
-                            <p class="text-secondary small mb-3">Digital 2D &bull; By Studio K</p>
+                            <h6 class="fw-bold text-white mb-1">Cyberpunk Neon</h6>
+                            <p class="text-secondary extra-small mb-3">Digital 2D &bull; By Studio K</p>
                             <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openPreviewModal('Cyberpunk Neon', 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1200&q=80', 'Digital 2D', 'Portrait', 'Futuristic neon portrait with intense lighting dynamics.', 'Studio K')">
                                 <i class="bi bi-eye me-1"></i> Quick Preview
                             </button>
@@ -200,7 +356,7 @@
                     </div>
                 </div>
 
-                <div class="masonry-item" data-category="3D Render">
+                <div class="masonry-item interactive-card" data-category="3D Render">
                     <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=600&q=80" alt="Abstract Prism Fluid" class="masonry-img">
                     <div class="masonry-overlay">
                         <div class="d-flex justify-content-between align-items-center">
@@ -208,26 +364,9 @@
                             <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
                         </div>
                         <div>
-                            <h5 class="fw-bold text-white mb-1">Prism Fluid Sculpt</h5>
-                            <p class="text-secondary small mb-3">3D Render &bull; By Modernist</p>
+                            <h6 class="fw-bold text-white mb-1">Prism Fluid Sculpt</h6>
+                            <p class="text-secondary extra-small mb-3">3D Render &bull; By Modernist</p>
                             <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openPreviewModal('Prism Fluid Sculpt', 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=1200&q=80', '3D Render', 'Abstract', 'Fluid glass and prism refraction experiment.', 'Modernist')">
-                                <i class="bi bi-eye me-1"></i> Quick Preview
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="masonry-item" data-category="Oil Painting">
-                    <img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=600&q=80" alt="Impressionist Sunset" class="masonry-img">
-                    <div class="masonry-overlay">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-dark bg-opacity-75 border border-secondary text-info rounded-pill px-2 py-1">Oil Painting</span>
-                            <button type="button" class="btn btn-glass action-btn-circle like-btn" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold text-white mb-1">Impressionist Waves</h5>
-                            <p class="text-secondary small mb-3">Oil Painting &bull; By Elena V.</p>
-                            <button type="button" class="btn btn-glass btn-sm w-100 fw-medium" onclick="openPreviewModal('Impressionist Waves', 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1200&q=80', 'Oil Painting', 'Landscape', 'Textured oil impasto technique depicting ocean sunset.', 'Elena V.')">
                                 <i class="bi bi-eye me-1"></i> Quick Preview
                             </button>
                         </div>
@@ -235,6 +374,8 @@
                 </div>
             {% endif %}
         </div>
+    </div>
+</div>
 
 <!-- Quick Preview Modal -->
 <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
@@ -265,75 +406,7 @@
     </div>
 </div>
 
-<!-- Chart.js CDN script -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-// Sidebar Toggle on Mobile
-document.addEventListener('DOMContentLoaded', () => {
-    const sidebar = document.getElementById('dashboardSidebar');
-    const toggleBtn = document.getElementById('sidebarToggle');
-    if (toggleBtn && sidebar) {
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('show');
-        });
-    }
-
-    // Chart 1: Category Doughnut Chart
-    const ctxCat = document.getElementById('categoryChart');
-    if (ctxCat) {
-        new Chart(ctxCat, {
-            type: 'doughnut',
-            data: {
-                labels: {{ analytics.categories_labels|tojson }},
-                datasets: [{
-                    data: {{ analytics.categories_data|tojson }},
-                    backgroundColor: ['#8B5CF6', '#06B6D4', '#EC4899', '#F59E0B', '#10B981'],
-                    borderWidth: 2,
-                    borderColor: '#1E293B'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'right', labels: { color: '#94A3B8', font: { family: 'Outfit' } } }
-                }
-            }
-        });
-    }
-
-    // Chart 2: Commission Pipeline Bar Chart
-    const ctxPipe = document.getElementById('pipelineChart');
-    if (ctxPipe) {
-        new Chart(ctxPipe, {
-            type: 'bar',
-            data: {
-                labels: {{ analytics.stage_labels|tojson }},
-                datasets: [{
-                    label: 'Commissions',
-                    data: {{ analytics.stage_data|tojson }},
-                    backgroundColor: 'rgba(6, 182, 212, 0.7)',
-                    borderColor: '#06B6D4',
-                    borderWidth: 1,
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: { ticks: { color: '#94A3B8' }, grid: { display: false } },
-                    y: { ticks: { color: '#94A3B8', stepSize: 1 }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
-                },
-                plugins: {
-                    legend: { display: false }
-                }
-            }
-        });
-    }
-});
-
 // Quick Preview Modal Handler
 function openPreviewModal(title, imgUrl, medium, category, description, author) {
     document.getElementById('previewTitle').textContent = title;

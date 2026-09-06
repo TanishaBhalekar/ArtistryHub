@@ -23,7 +23,10 @@ def upload():
         medium = request.form.get('medium', '').strip()
         category = request.form.get('category', '').strip()
         tags = request.form.get('tags', '').strip()
+        action = request.form.get('action', 'publish').strip()
         visibility = request.form.get('visibility', 'public').strip()
+        if action == 'draft':
+            visibility = 'private'
 
         # Check title
         if not title:

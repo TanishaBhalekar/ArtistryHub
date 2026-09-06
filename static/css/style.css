@@ -1,40 +1,73 @@
-/* Default Dark Mode CSS Variables (:root) */
-:root {
-    --bg-theme: #0F172A; /* Slate 900 */
-    --card-bg: rgba(30, 41, 59, 0.75); /* Slate 800 with 75% opacity */
-    --card-surface: #1E293B; /* Slate 800 solid surface */
-    --card-border: rgba(255, 255, 255, 0.12);
-    --input-bg: rgba(15, 23, 42, 0.6);
-    --input-border: rgba(148, 163, 184, 0.2);
+/* ==========================================================================
+   ARTISTRY HUB GLOBAL DESIGN SYSTEM SPECIFICATION (from DESIGN.md)
+   ========================================================================== */
+
+/* Default Dark Mode CSS Variables (:root / [data-theme="dark"]) - Studio Obsidian Noir */
+:root,
+[data-theme="dark"] {
+    --bg-theme: #0E0F12; /* Studio Obsidian Noir Foundation */
+    --bg-surface-dim: #121316; /* Recessed floor */
+    --card-bg: rgba(26, 29, 39, 0.75); /* Translucent obsidian glass (Level 1) */
+    --card-surface: #16181F; /* Studio graphite container */
+    --card-border: rgba(255, 255, 255, 0.08); /* 1px Frosted Vitrine border */
+    --input-bg: rgba(18, 19, 22, 0.7);
+    --input-border: rgba(255, 255, 255, 0.1);
     --text-primary: #F8FAFC;
     --text-muted: #94A3B8;
-    --accent-purple: #8B5CF6;
-    --accent-cyan: #06B6D4;
+    
+    /* Brand Accents */
+    --accent-primary: #E5A93C; /* Radiant Warm Amber */
+    --accent-amber: #E5A93C;
+    --accent-gold: #F59E0B;
+    --accent-purple: #8B5CF6; /* Digital Violet */
+    --accent-cyan: #06B6D4; /* Digital Cyan */
     --accent-pink: #EC4899;
-    --navbar-bg: rgba(15, 23, 42, 0.85);
-    --sidebar-bg: rgba(30, 41, 59, 0.85);
+    
+    /* Workflow Statuses */
+    --status-revision: #EF4444;
+    --status-pending: #F59E0B;
+    --status-delivery: #10B981;
+    
+    /* Navigation & Surfaces */
+    --navbar-bg: rgba(14, 15, 18, 0.88);
+    --sidebar-bg: rgba(22, 24, 31, 0.88);
     --sidebar-width: 260px;
-    --ring-bg: rgba(255, 255, 255, 0.1);
-    --hover-overlay: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.5) 50%, rgba(15, 23, 42, 0.2) 100%);
+    --ring-bg: rgba(255, 255, 255, 0.08);
+    --shadow-glow: 0 0 20px rgba(229, 169, 60, 0.28);
+    --hover-overlay: linear-gradient(to top, rgba(14, 15, 18, 0.95) 0%, rgba(22, 24, 31, 0.6) 50%, rgba(22, 24, 31, 0.2) 100%);
 }
 
-/* Light Mode CSS Variable Overrides ([data-theme="light"]) */
+/* Light Mode CSS Variable Overrides ([data-theme="light"]) - Gallery Editorial & Terracotta */
 [data-theme="light"] {
-    --bg-theme: #F8FAFC; /* Slate 50 */
-    --card-bg: rgba(255, 255, 255, 0.85);
-    --card-surface: #FFFFFF;
-    --card-border: rgba(148, 163, 184, 0.25);
-    --input-bg: rgba(241, 245, 249, 0.9);
-    --input-border: rgba(203, 213, 225, 0.8);
-    --text-primary: #0F172A; /* Slate 900 */
-    --text-muted: #475569; /* Slate 600 */
+    --bg-theme: #FAF9F6; /* Warm Gallery Bone Canvas */
+    --bg-surface-dim: #EFEEEB; /* Recessed container tray */
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --card-surface: #FFFFFF; /* Pure elevated white surface */
+    --card-border: #E6E3DD; /* Architectural 1px hairline boundary */
+    --input-bg: rgba(244, 243, 240, 0.9);
+    --input-border: #E6E3DD;
+    --text-primary: #1A1A1E; /* Deep Slate-Charcoal Ink */
+    --text-muted: #56423C; /* Muted placard metadata */
+    
+    /* Brand Accents */
+    --accent-primary: #D96B43; /* South Asian Raw Terracotta */
+    --accent-terracotta: #D96B43;
+    --accent-gold: #C58B2E; /* Radiant Gold-Ochre */
     --accent-purple: #7C3AED;
     --accent-cyan: #0891B2;
     --accent-pink: #DB2777;
-    --navbar-bg: rgba(255, 255, 255, 0.9);
-    --sidebar-bg: rgba(241, 245, 249, 0.92);
-    --ring-bg: rgba(0, 0, 0, 0.08);
-    --hover-overlay: linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.2) 100%);
+    
+    /* Workflow Statuses */
+    --status-revision: #BA1A1A;
+    --status-pending: #F59E0B;
+    --status-delivery: #10B981;
+    
+    /* Navigation & Surfaces */
+    --navbar-bg: rgba(250, 249, 246, 0.92);
+    --sidebar-bg: rgba(244, 243, 240, 0.95);
+    --ring-bg: rgba(0, 0, 0, 0.06);
+    --shadow-glow: 0 0 0 3px rgba(217, 107, 67, 0.15);
+    --hover-overlay: linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0.2) 100%);
 }
 
 /* Global 0.3s cubic-bezier transition for smooth theme shifts */
@@ -49,13 +82,32 @@
 
 body {
     background-color: var(--bg-theme) !important;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, sans-serif;
     color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
 }
 
 body.bg-slate-900 {
     background-color: var(--bg-theme) !important;
     color: var(--text-primary);
+}
+
+/* Typography Hierarchy Tokens from DESIGN.md */
+h1, h2, h3, h4, h5, h6,
+.font-serif,
+.display-1, .display-2, .display-3, .display-4,
+.display-lg, .headline-lg, .headline-md {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+}
+
+/* Tabular Currency Contract */
+.currency-inr {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-variant-numeric: tabular-nums !important;
+    font-weight: 700;
+    letter-spacing: 0.02em;
 }
 
 /* Light Theme Text Adaptation Overrides */
@@ -75,12 +127,13 @@ body.bg-slate-900 {
 }
 
 [data-theme="light"] .bg-dark {
-    background-color: rgba(241, 245, 249, 0.8) !important;
+    background-color: rgba(244, 243, 240, 0.9) !important;
     color: var(--text-primary) !important;
+    border-color: var(--card-border) !important;
 }
 
 [data-theme="light"] .masonry-overlay .text-white {
-    color: #0F172A !important;
+    color: #1A1A1E !important;
 }
 
 /* Glassmorphic Cards & Panels */
@@ -94,7 +147,7 @@ body.bg-slate-900 {
 }
 
 .frosted-glass:hover {
-    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.22);
     border-color: var(--card-border);
 }
 
@@ -108,16 +161,23 @@ body.bg-slate-900 {
 /* Custom Nav & Header */
 .custom-nav {
     background: var(--navbar-bg) !important;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--card-border);
 }
 
 .logo-text {
+    font-family: 'Playfair Display', Georgia, serif;
     color: var(--text-primary);
 }
 
 .logo-text span.text-accent {
-    background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .logo-text span.text-accent {
+    background: linear-gradient(135deg, #E5A93C, #F59E0B);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -135,28 +195,62 @@ body.bg-slate-900 {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .theme-toggle-btn:hover {
     transform: translateY(-2px) scale(1.04);
-    border-color: var(--accent-cyan);
-    box-shadow: 0 4px 14px rgba(6, 182, 212, 0.25);
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-glow);
 }
 
 /* Buttons */
 .btn-gradient {
-    background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-gold));
     color: #ffffff !important;
     border: none;
-    font-weight: 500;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+[data-theme="dark"] .btn-gradient {
+    background: linear-gradient(135deg, #E5A93C, #F59E0B);
+    color: #0E0F12 !important;
 }
 
 .btn-gradient:hover {
-    color: #ffffff !important;
-    opacity: 0.92;
+    opacity: 0.94;
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+    box-shadow: var(--shadow-glow);
+}
+
+/* Terracotta & Amber Dedicated Buttons */
+.btn-terracotta {
+    background-color: #D96B43 !important;
+    color: #FFFFFF !important;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.btn-terracotta:hover {
+    background-color: #BD5630 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(217, 107, 67, 0.35);
+}
+
+.btn-amber {
+    background-color: #E5A93C !important;
+    color: #0E0F12 !important;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.btn-amber:hover {
+    background-color: #FFC665 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(229, 169, 60, 0.35);
 }
 
 .btn-glass {
@@ -316,10 +410,38 @@ a.link-accent:hover {
 }
 
 .filter-pill:hover, .filter-pill.active {
-    background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+    background: var(--accent-primary);
     color: #ffffff !important;
     border-color: transparent;
-    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 4px 12px rgba(217, 107, 67, 0.3);
+}
+
+[data-theme="dark"] .filter-pill:hover,
+[data-theme="dark"] .filter-pill.active {
+    background: var(--accent-amber);
+    color: #0E0F12 !important;
+    box-shadow: 0 4px 14px rgba(229, 169, 60, 0.35);
+}
+
+/* Tag Pills from DESIGN.md */
+.tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: rgba(139, 92, 246, 0.12);
+    color: var(--accent-purple);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    cursor: pointer;
+}
+
+.tag-pill:hover {
+    background: rgba(139, 92, 246, 0.25);
+    color: #FFFFFF;
+    transform: translateY(-1px);
 }
 
 /* Pinterest-style Masonry Layout */
@@ -522,6 +644,101 @@ a.link-accent:hover {
     width: 100%;
     min-height: 200px;
     border-radius: 12px;
+}
+
+/* Artist Daily Workflow Component Styles */
+.hero-greeting-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+}
+
+.summary-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--card-border);
+}
+
+.action-task-card {
+    background: var(--card-surface);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-task-card:hover {
+    border-color: var(--accent-purple);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.18);
+}
+
+.pipeline-mini-step {
+    flex: 1;
+    background: var(--card-surface);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 0.9rem 1.1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.pipeline-mini-step.active-stage {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 4px 16px rgba(6, 182, 212, 0.2);
+}
+
+/* Modern Dropzone Styles */
+.dropzone-box {
+    border: 2px dashed var(--input-border);
+    border-radius: 16px;
+    background: var(--input-bg);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dropzone-box:hover, .dropzone-box.dragover {
+    border-color: var(--accent-cyan);
+    background: rgba(6, 182, 212, 0.08);
+    transform: scale(1.01);
+}
+
+/* Split-Screen Auth Styles */
+.auth-split-wrapper {
+    min-height: calc(100vh - 140px);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    background: var(--card-surface);
+}
+
+.auth-banner-side {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.7) 0%, rgba(30, 41, 59, 0.85) 100%), 
+                url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.auth-floating-chip {
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.1rem 1.4rem;
+}
+
+.text-light-blue {
+    color: #38BDF8 !important;
 }
 
 /* Responsive Hide Sidebar */

@@ -3,19 +3,88 @@
 {% block title %}Sign In - ArtistryHub{% endblock %}
 
 {% block content %}
-<div class="container my-auto py-4">
-    <div class="row justify-content-center">
-        <div class="col-12 col-sm-10 col-md-8 col-lg-5">
-            <div class="frosted-glass p-4 p-md-5">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold mb-1">Welcome <span class="text-gradient">Back</span></h2>
-                    <p class="text-secondary small">Sign in to manage your artwork and commissions</p>
+<div class="container py-4 my-auto">
+    <div class="auth-split-wrapper row g-0 shadow-lg animate-fade-in">
+        
+        <!-- Left Column: Visual Showstopper (50% width on desktop, hidden on mobile) -->
+        <div class="col-12 col-lg-6 auth-banner-side d-none d-lg-flex flex-column justify-content-between p-5 text-light position-relative">
+            <div class="position-relative z-1">
+                <a class="navbar-brand fw-bold fs-3 logo-text text-light" href="{{ url_for('index') }}">
+                    Artistry<span class="text-accent">Hub</span>
+                </a>
+            </div>
+
+            <!-- Overlay Typography -->
+            <div class="position-relative z-1 my-auto py-4">
+                <span class="badge bg-purple-subtle text-info border border-info-subtle mb-3 px-3 py-2">
+                    <i class="bi bi-stars me-1"></i> Creator Workspace 2.0
+                </span>
+                <h2 class="fw-bold display-6 mb-3 text-white" style="line-height: 1.2;">
+                    Your art deserves a workspace as creative as you are.
+                </h2>
+                <p class="text-secondary fs-6 max-w-md">
+                    Join thousands of digital artists, illustrators, and creators managing their craft on ArtistryHub.
+                </p>
+            </div>
+
+            <!-- Floating Aesthetic Testimonial Chip -->
+            <div class="auth-floating-chip position-relative z-1">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex ms-1">
+                        <div class="bg-gradient text-white rounded-circle d-flex align-items-center justify-content-center fw-bold extra-small border border-dark" style="width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));">
+                            EA
+                        </div>
+                        <div class="bg-gradient text-white rounded-circle d-flex align-items-center justify-content-center fw-bold extra-small border border-dark ms-n2" style="width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));">
+                            SK
+                        </div>
+                        <div class="bg-gradient text-white rounded-circle d-flex align-items-center justify-content-center fw-bold extra-small border border-dark ms-n2" style="width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));">
+                            MV
+                        </div>
+                    </div>
+                    <div>
+                        <div class="extra-small fw-bold text-light mb-1">
+                            <i class="bi bi-star-fill text-warning me-1"></i> 4.9/5 from 10k+ Digital Artists
+                        </div>
+                        <div class="extra-small text-secondary">"Transformed how I manage my client commissions!"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Form Area (50% width) -->
+        <div class="col-12 col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5 bg-dark-subtle">
+            <div class="max-w-md mx-auto w-100">
+                <!-- Header Branding -->
+                <div class="text-center text-lg-start mb-4">
+                    <h3 class="fw-bold text-light-blue mb-1" style="color: #38BDF8;">Welcome Back 👋</h3>
+                    <p class="text-secondary small">Enter your credentials to access your creator workspace.</p>
                 </div>
 
+                <!-- Social Auth Button Options -->
+                <div class="d-flex gap-2 mb-4">
+                    <button type="button" class="btn btn-glass btn-sm flex-grow-1 py-2 fw-medium" onclick="alert('Google Social Auth Simulator activated!')">
+                        <i class="bi bi-google text-danger me-1"></i> Google
+                    </button>
+                    <button type="button" class="btn btn-glass btn-sm flex-grow-1 py-2 fw-medium" onclick="alert('GitHub Social Auth Simulator activated!')">
+                        <i class="bi bi-github me-1"></i> GitHub
+                    </button>
+                    <button type="button" class="btn btn-glass btn-sm flex-grow-1 py-2 fw-medium" onclick="alert('ArtStation Social Auth Simulator activated!')">
+                        <i class="bi bi-palette-fill text-cyan me-1" style="color: var(--accent-cyan);"></i> ArtStation
+                    </button>
+                </div>
+
+                <!-- Clean Divider -->
+                <div class="d-flex align-items-center my-3 text-secondary extra-small">
+                    <hr class="flex-grow-1 border-secondary-subtle my-0">
+                    <span class="px-3 text-uppercase tracking-wider">or continue with email</span>
+                    <hr class="flex-grow-1 border-secondary-subtle my-0">
+                </div>
+
+                <!-- Login Form -->
                 <form method="POST" action="{{ url_for('auth.login') }}" class="needs-validation" novalidate>
                     <!-- Username or Email -->
                     <div class="mb-3">
-                        <label for="login_id" class="form-label text-secondary small fw-semibold">Username or Email</label>
+                        <label for="login_id" class="form-label text-secondary small fw-semibold">Username or Email *</label>
                         <div class="input-group">
                             <span class="input-group-text bg-dark border-secondary-subtle text-secondary">
                                 <i class="bi bi-person"></i>
@@ -33,9 +102,12 @@
                         </div>
                     </div>
 
-                    <!-- Password -->
+                    <!-- Password with Show/Hide Toggle -->
                     <div class="mb-3">
-                        <label for="password" class="form-label text-secondary small fw-semibold">Password</label>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="password" class="form-label text-secondary small fw-semibold mb-0">Password *</label>
+                            <a href="#" class="link-accent extra-small">Forgot password?</a>
+                        </div>
                         <div class="input-group">
                             <span class="input-group-text bg-dark border-secondary-subtle text-secondary">
                                 <i class="bi bi-lock"></i>
@@ -46,6 +118,9 @@
                                    name="password" 
                                    placeholder="••••••••" 
                                    required>
+                            <button class="btn btn-dark border border-secondary-subtle text-secondary" type="button" onclick="togglePasswordVisibility('password', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
                             <div class="invalid-feedback">
                                 Please enter your password.
                             </div>
@@ -53,47 +128,46 @@
                     </div>
 
                     <!-- Remember Me -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="remember" name="remember">
-                            <label class="form-check-label text-secondary small" for="remember">
-                                Remember me
-                            </label>
-                        </div>
-                        <a href="#" class="link-accent small">Forgot password?</a>
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                        <label class="form-check-label text-secondary small" for="remember">
+                            Keep me signed in on this device
+                        </label>
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn btn-gradient w-100 py-2 fw-semibold mb-3">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                    <button type="submit" class="btn btn-gradient w-100 py-2.5 fw-semibold mb-3">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Enter Workspace
                     </button>
                 </form>
 
+                <!-- Switch Link to Signup -->
                 <div class="text-center mt-3 pt-3 border-top border-secondary-subtle">
                     <p class="text-secondary small mb-0">
                         Don't have an account yet? 
-                        <a href="{{ url_for('auth.register') }}" class="link-accent fw-medium">Create Account</a>
+                        <a href="{{ url_for('auth.register') }}" class="link-accent fw-semibold">Create Free Account</a>
                     </p>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
 <script>
-// Bootstrap form validation script
-(function () {
-  'use strict'
-  const forms = document.querySelectorAll('.needs-validation')
-  Array.from(forms).forEach(form => {
-    form.addEventListener('submit', event => {
-      if (!form.checkValidity()) {
-        event.preventDefault()
-        event.stopPropagation()
-      }
-      form.classList.add('was-validated')
-    }, false)
-  })
-})()
+// Show / Hide Password Toggle
+function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
 </script>
 {% endblock %}

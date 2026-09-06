@@ -7,12 +7,18 @@
     <!-- Header -->
     <div class="frosted-glass p-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
         <div>
+            <div class="mb-1">
+                <a href="{{ url_for('ai.hub') }}" class="text-accent text-decoration-none extra-small fw-bold">
+                    &larr; AI Studio
+                </a>
+                <span class="text-secondary extra-small">/ Composition Guide</span>
+            </div>
             <h2 class="fw-bold mb-1"><i class="bi bi-bounding-box text-accent me-2"></i>Composition <span class="text-gradient">Guide</span></h2>
             <p class="text-secondary mb-0 small">Analyze layout sketches with OpenCV Canny edge detection and focal point centroid tracking with Rule-of-Thirds grid overlays.</p>
         </div>
         <div>
-            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            <a href="{{ url_for('ai.hub') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to AI Studio
             </a>
         </div>
     </div>
@@ -96,10 +102,17 @@
                     </div>
                 {% else %}
                     <!-- Empty State -->
-                    <div class="text-center py-5 my-3">
-                        <i class="bi bi-grid-3x3-gap display-3 text-secondary mb-3"></i>
-                        <h5>No Composition Analysis Executed</h5>
-                        <p class="text-secondary small max-w-md mx-auto">Upload a rough layout sketch or drawing to run Canny edge extraction and overlay dynamic composition guidelines.</p>
+                    <div class="text-center py-5 my-3 animate-fade-in">
+                        <div class="mx-auto mb-3 bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                            <i class="bi bi-bounding-box display-5"></i>
+                        </div>
+                        <h4 class="fw-bold text-light mb-2">No composition guide generated yet ✨</h4>
+                        <p class="text-secondary small mb-4 max-w-md mx-auto">Upload a rough layout sketch or drawing to run Canny edge extraction and overlay dynamic rule-of-thirds composition guidelines.</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{{ url_for('portfolio.upload') }}" class="btn btn-gradient px-4 py-2 fw-semibold">
+                                <i class="bi bi-cloud-arrow-up me-1"></i> Upload Sketch
+                            </a>
+                        </div>
                     </div>
                 {% endif %}
             </div>

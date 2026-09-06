@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}AI Creative Suite Studio - ArtistryHub{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-md-4">
+    <!-- Header -->
+    <div class="hero-greeting-card frosted-glass p-4 p-md-5 mb-4 animate-fade-in text-center text-md-start">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+                <span class="badge bg-purple-subtle text-info border border-info-subtle mb-2 px-3 py-2">
+                    <i class="bi bi-cpu-fill me-1"></i> Edge AI Processing Suite
+                </span>
+                <h2 class="fw-bold text-light mb-2">AI Creative Suite</h2>
+                <h5 class="text-accent font-monospace mb-2">From inspiration to final composition.</h5>
+                <p class="text-secondary mb-0 small max-w-2xl">Discover aesthetics, extract mathematical color matrices, analyze sketch composition geometry, and forge precise prompts — powered by zero-cost local computer vision.</p>
+            </div>
+            <div>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-glass px-4 py-2">
+                    <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categorized Card Grid: EXPLORE, ANALYZE, CREATE -->
+    <div class="row g-4 mb-4">
+        
+        <!-- Category 1: 🎨 EXPLORE -->
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="frosted-glass p-4 h-100 d-flex flex-column justify-content-between interactive-card animate-fade-in">
+                <div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-1 fw-bold">
+                            🎨 EXPLORE
+                        </span>
+                        <i class="bi bi-journal-album fs-3 text-warning"></i>
+                    </div>
+                    <h4 class="fw-bold text-light mb-2">Style Explorer</h4>
+                    <p class="text-secondary small mb-4">
+                        Discover aesthetics, lighting modes, and artistic genres. Index historic movements, digital techniques, master artists, and prompt keywords.
+                    </p>
+                </div>
+                <div>
+                    <a href="{{ url_for('ai.style_explorer') }}" class="btn btn-gradient w-100 py-2 fw-semibold">
+                        Explore Styles <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category 2: 🌈 ANALYZE - Palette Lab -->
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="frosted-glass p-4 h-100 d-flex flex-column justify-content-between interactive-card animate-fade-in">
+                <div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="badge bg-purple-subtle text-info border border-info-subtle px-3 py-1 fw-bold">
+                            🌈 ANALYZE
+                        </span>
+                        <i class="bi bi-palette fs-3 text-accent"></i>
+                    </div>
+                    <h4 class="fw-bold text-light mb-2">Palette Lab</h4>
+                    <p class="text-secondary small mb-4">
+                        Generate harmonious color schemes and extract hex palettes. Parses uploaded artwork pixels directly using OpenCV and Scikit-Learn K-Means.
+                    </p>
+                </div>
+                <div>
+                    <a href="{{ url_for('ai.palette_lab') }}" class="btn btn-gradient w-100 py-2 fw-semibold">
+                        Open Palette Lab <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category 2: 🌈 ANALYZE - Composition Guide -->
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="frosted-glass p-4 h-100 d-flex flex-column justify-content-between interactive-card animate-fade-in">
+                <div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 fw-bold">
+                            🌈 ANALYZE
+                        </span>
+                        <i class="bi bi-bounding-box fs-3 text-success"></i>
+                    </div>
+                    <h4 class="fw-bold text-light mb-2">Composition Guide</h4>
+                    <p class="text-secondary small mb-4">
+                        Evaluate balance, focal points, and rule of thirds. Runs OpenCV Canny edge detection and centroid tracking over layout sketches.
+                    </p>
+                </div>
+                <div>
+                    <a href="{{ url_for('ai.composition_guide') }}" class="btn btn-gradient w-100 py-2 fw-semibold">
+                        Analyze Composition <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category 3: ✨ CREATE - Prompt Forge -->
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="frosted-glass p-4 h-100 d-flex flex-column justify-content-between interactive-card animate-fade-in">
+                <div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="badge bg-info-subtle text-cyan border border-info-subtle px-3 py-1 fw-bold" style="color: var(--accent-cyan);">
+                            ✨ CREATE
+                        </span>
+                        <i class="bi bi-cpu fs-3 text-cyan" style="color: var(--accent-cyan);"></i>
+                    </div>
+                    <h4 class="fw-bold text-light mb-2">Prompt Forge</h4>
+                    <p class="text-secondary small mb-4">
+                        Craft precise prompts tailored for concept generation. Mathematically constructs descriptive strings based on theme, mood, lighting, and camera angle.
+                    </p>
+                </div>
+                <div>
+                    <a href="{{ url_for('ai.prompt_forge') }}" class="btn btn-gradient w-100 py-2 fw-semibold">
+                        Open Prompt Forge <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recent AI Generations / Palettes History Drawer Strip -->
+    <div class="frosted-glass p-4 animate-fade-in">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h5 class="fw-bold mb-0">
+                <i class="bi bi-clock-history text-info me-2"></i>Recent AI Studio Activity
+            </h5>
+            <span class="badge bg-dark text-secondary border border-secondary">Local Storage Cache</span>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+            <!-- Palette Activity Card -->
+            <div class="col">
+                <div class="p-3 rounded bg-dark border border-secondary h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-purple-subtle text-info extra-small">Color Matrix</span>
+                        <small class="text-muted extra-small">Recent Extract</small>
+                    </div>
+                    <div class="d-flex rounded overflow-hidden mb-2" style="height: 18px;">
+                        <div style="width: 25%; background: #8B5CF6;"></div>
+                        <div style="width: 25%; background: #06B6D4;"></div>
+                        <div style="width: 25%; background: #EC4899;"></div>
+                        <div style="width: 25%; background: #10B981;"></div>
+                    </div>
+                    <div class="extra-small text-secondary text-truncate">5 HEX Dominant Swatches extracted</div>
+                </div>
+            </div>
+
+            <!-- Prompt Forge Activity Card -->
+            <div class="col">
+                <div class="p-3 rounded bg-dark border border-secondary h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-info-subtle text-cyan extra-small">Prompt Matrix</span>
+                        <small class="text-muted extra-small">Recent Forged</small>
+                    </div>
+                    <div class="font-monospace extra-small text-light text-truncate mb-1">
+                        "Cyberpunk City, ethereal mystical mood..."
+                    </div>
+                    <div class="extra-small text-secondary">Cinematic Wide Angle &bull; Neon Rim</div>
+                </div>
+            </div>
+
+            <!-- Composition Guide Activity Card -->
+            <div class="col">
+                <div class="p-3 rounded bg-dark border border-secondary h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-success-subtle text-success extra-small">Sketch Scan</span>
+                        <small class="text-muted extra-small">Recent Guide</small>
+                    </div>
+                    <div class="small fw-semibold text-light mb-1">Rule of Thirds Overlay</div>
+                    <div class="extra-small text-secondary">Canny Edge Density &bull; Centroid (0.33, 0.66)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
